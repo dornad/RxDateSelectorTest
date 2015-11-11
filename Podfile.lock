@@ -1,0 +1,21 @@
+PODS:
+  - RxBlocking (2.0.0-beta.2):
+    - RxSwift (~> 2.0.0-beta)
+  - RxCocoa (2.0.0-beta.2):
+    - RxSwift (~> 2.0.0-beta)
+  - RxSwift (2.0.0-beta.2)
+  - SnapKit (0.17.0)
+
+DEPENDENCIES:
+  - RxBlocking (~> 2.0.0-beta)
+  - RxCocoa (~> 2.0.0-beta)
+  - RxSwift (~> 2.0.0-beta)
+  - SnapKit (~> 0.17.0)
+
+SPEC CHECKSUMS:
+  RxBlocking: ffb518856fb7712dcef7e18406ccb8c2854b3104
+  RxCocoa: ee39aa3ab24a8dde3832669f8e1e2c7652925e0c
+  RxSwift: 795720c22352cf1f62669ef3695b5df7e195103b
+  SnapKit: 49fd7b1b3ff58ab4064004036b8afcfddbd3a4bd
+
+COCOAPODS: 0.39.0
