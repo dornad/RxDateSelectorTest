@@ -81,7 +81,7 @@ public class EventDetailsDateSelectorViewModel {
     
     private let dateFormatter:NSDateFormatter = NSDateFormatter()
     
-    required public init(startDate:NSDate? = nil, endDate:NSDate? = nil, timeZone:NSTimeZone = NSTimeZone.systemTimeZone(), allDay: Bool=false) {
+    required public init(startDate:NSDate? = nil, endDate:NSDate? = nil, timeZone:NSTimeZone = NSTimeZone.localTimeZone(), allDay: Bool=false) {
         
         self.startDate = startDate
         self.endDate = endDate

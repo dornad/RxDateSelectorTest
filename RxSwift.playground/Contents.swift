@@ -6,9 +6,30 @@ import RxCocoa
 import RxSwift
 import XCPlayground
 
-// Extensions for TestViewController
-
-extension TestViewController : TestViewControllerFoo {
+extension TestViewController : TestViewControllerPlaygroundExtensions {
+    
+    struct UIConstants {
+        static let tableHeaderFrame:CGRect = CGRectMake(0, 0, 180, 50)
+        static let tableFooterFrame:CGRect = CGRectMake(0, 0, 180, 150)
+    }
+    
+    public func tableHeaderView() -> UIView? {
+        
+        // for some reason snapkit doesn't like working with the header and footer.
+        let sv = UIView(frame: UIConstants.tableHeaderFrame)
+        tableHeaderLabel(withSuperview: sv)
+        lineSeparator(withSuperview: sv)
+        return sv
+    }
+    
+    public func tableFooterView() -> UIView? {
+        
+        // for some reason snapkit doesn't like working with the header and footer.
+        let sv = UIView(frame: UIConstants.tableFooterFrame)
+        tableFooterButton(withSuperview: sv)
+        
+        return sv
+    }
     
     public func headerInSection(rowDesc:RowDesc) -> UIView? {
         
@@ -20,17 +41,23 @@ extension TestViewController : TestViewControllerFoo {
         return header
     }
     
-    public func setupCell(cell: UITableViewCell, rowDesc: RowDesc) {
+    public func setupCell(cell:UITableViewCell, rowDesc:RowDesc) {
         
-        cell.datePicker.removeFromSuperview()
-        cell.contentView.addSubview(cell.datePicker)
+        guard rowDesc.type.isDateType() || rowDesc.type == .TimeZone else {
+            return
+        }
+        
+        let picker = rowDesc.type.isDateType() ? cell.datePicker : cell.timeZonePicker
+        picker.removeFromSuperview()
+        cell.contentView.addSubview(picker)
         
         // TODO: RxSwift
-        cell.datePicker.snp_makeConstraints { (make) -> Void in
+        
+        picker.snp_makeConstraints { (make) -> Void in
             make.left
                 .right
                 .top
-                .bottom.equalTo(cell.datePicker.superview!)
+                .bottom.equalTo(cell.contentView)
         }
     }
     
@@ -66,6 +93,25 @@ extension TestViewController {
                 .bottom
                 .equalTo(separator.superview!)
             make.height.equalTo(0.8)
+        }
+    }
+    
+    func tableFooterButton(withSuperview sv:UIView) {
+        let button: UIButton = UIButton(type: .Custom)
+        button.backgroundColor = UIColor.blackColor()
+        button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        button.titleLabel?.font = UIFont.helveticaNeueMediumFontWithSize(12)
+        button.setTitle(NSLocalizedString("SAVE", comment: "Title of Save button in Date/Time picker"), forState: .Normal)
+        
+        sv.addSubview(button)
+        
+        button.snp_makeConstraints { (make) -> Void in
+            make.width.equalTo(150)
+            make.height.equalTo(44)
+            make.centerX.equalTo(sv)
+
+            make.centerY.equalTo(sv)
+            //make.top.equalTo(100)
         }
     }
     
@@ -127,16 +173,18 @@ extension TestViewController {
     
 }
 
-// TableViewCell
+// UITableViewCell
 
-protocol DatePicker {
+protocol DateAndTimeZonePicker {
     var datePicker:UIDatePicker { get set }
+    var timeZonePicker:UIPickerView {get set}
 }
 
-extension UITableViewCell : DatePicker {
+extension UITableViewCell : DateAndTimeZonePicker {
     
     private struct AssociatedKeys {
-        static var DatePicker = "nsh_DatePicker"
+        static var DatePicker = "pp_DatePicker"
+        static var TimeZonePicker = "pp_TimeZonePicker"
     }
     
     var datePicker:UIDatePicker {
@@ -152,11 +200,49 @@ extension UITableViewCell : DatePicker {
             objc_setAssociatedObject(self, &AssociatedKeys.DatePicker, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
+    
+    var timeZonePicker:UIPickerView {
+        get {
+            var picker = objc_getAssociatedObject(self, &AssociatedKeys.TimeZonePicker) as? UIPickerView
+            if picker == nil {
+                picker = UIPickerView()
+                picker?.delegate = self
+                picker?.dataSource = self
+                self.timeZonePicker = picker!
+            }
+            return picker!
+        }
+        set {
+            objc_setAssociatedObject(self, &AssociatedKeys.TimeZonePicker, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}
+
+extension UITableViewCell: UIPickerViewDataSource, UIPickerViewDelegate {
+
+    public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    public func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return NSTimeZone.knownTimeZoneNames().count
+    }
+    
+    public func pickerView(pickerView: UIPickerView,titleForRow row: Int,forComponent component: Int) -> String? {
+        // might be worth looking into: http://stackoverflow.com/questions/31338724/how-to-get-full-time-zone-name-ios
+        return NSTimeZone.knownTimeZoneNames()[row]
+    }
+    
+    public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        let selectedName = NSTimeZone.knownTimeZoneNames()[row]
+        print("you selected: \(selectedName)")
+    }
 }
 
 // Test Code Starts here
 
-let viewModel = ViewModel(startDate: NSDate())
+let viewModel = ViewModel()
 let ctrl = TestViewController(viewModel: viewModel)
 
 XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
