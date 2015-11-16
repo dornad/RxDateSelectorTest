@@ -19,7 +19,6 @@ func ==(lhs:RowDesc, rhs:RowDesc) -> Bool {
     return lhs.state == rhs.state && lhs.type == rhs.type
 }
 
-
 func ==(lhs:[RowDesc], rhs:[RowDesc]) -> Bool {
     
     guard lhs.count == rhs.count else {
@@ -32,20 +31,7 @@ func ==(lhs:[RowDesc], rhs:[RowDesc]) -> Bool {
         lhs[3] == rhs[3]
 }
 
-
 class ViewModelTests: XCTestCase {
-    
-    let disposableBag = DisposeBag()
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
     
     func testStartDateComesPreselectedWhenNotPassingArguments() {
 
