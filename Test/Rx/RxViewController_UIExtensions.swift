@@ -7,8 +7,43 @@
 //
 
 import UIKit
+
 import RxSwift
+import RxCocoa
 import SnapKit
+
+// MARK: Two Way binding operator
+
+// Two way binding operator between control property and variable, that's all it takes {
+infix operator <-> {
+}
+
+func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable {
+    let bindToUIDisposable = variable
+        .bindTo(property)
+    let bindToVariable = property
+        .subscribe(onNext: { n in
+            variable.value = n
+            }, onCompleted:  {
+                bindToUIDisposable.dispose()
+        })
+    
+    return StableCompositeDisposable.create(bindToUIDisposable, bindToVariable)
+}
+
+func <-> <T>(property: ControlProperty<T?>, variable: Variable<T?>) -> Disposable {
+    let bindToUIDisposable = variable
+        .bindTo(property)
+    let bindToVariable = property
+        .subscribe(onNext: { n in
+            variable.value = n
+            }, onCompleted:  {
+                bindToUIDisposable.dispose()
+        })
+    
+    return StableCompositeDisposable.create(bindToUIDisposable, bindToVariable)
+}
+
 
 // MARK: Constants, Header, Footer and Cell Setup
 
@@ -54,6 +89,7 @@ extension RxViewController {
         sectionHeaderLabel(rowDesc, withSuperview: header)
         sectionHeaderAccessory(rowDesc, withSuperview: header)
         lineSeparator(withSuperview: header)
+        addGestureRecognizerTo(rowDesc, toView: header)
         
         return header
     }
@@ -146,7 +182,7 @@ extension RxViewController {
     @objc func onTapInView(sender:UITapGestureRecognizer) {
 
         if sender.state == .Ended {
-            self.viewModel.selectedRowType = sender.sectionType
+            self.viewModel.selectedRowType.value = sender.sectionType
         }
     }
     
@@ -187,12 +223,8 @@ extension RxViewController {
         }
         
         let allDaySwitch = UISwitch()
-        allDaySwitch.on = viewModel.allDay
-        allDaySwitch.rx_value
-            .subscribeNext { value in
-                self.viewModel.allDay = value
-            }
-            .addDisposableTo(disposeBag)
+        
+        allDaySwitch.rx_value <-> self.viewModel.allDay
         
         sv.addSubview(allDaySwitch)
         
@@ -207,11 +239,9 @@ extension RxViewController {
         
         cell.datePicker.removeFromSuperview()
         cell.contentView.addSubview(cell.datePicker)
-        cell.datePicker.rx_date
-            .subscribeNext { date in
-                self.viewModel.startDate = date
-            }
-            .addDisposableTo(self.disposeBag)
+        
+//        cell.datePicker.rx_date <-> self.viewModel.startDate
+        
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left
                 .right
@@ -229,11 +259,8 @@ extension RxViewController {
         
         cell.datePicker.removeFromSuperview()
         cell.contentView.addSubview(cell.datePicker)
-        cell.datePicker.rx_date
-            .subscribeNext { date in
-                self.viewModel.endDate = date
-            }
-            .addDisposableTo(self.disposeBag)
+        
+//        cell.datePicker.rx_date <-> self.viewModel.endDate
         
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left

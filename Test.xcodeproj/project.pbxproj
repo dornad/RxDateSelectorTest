@@ -12,13 +12,14 @@
 		5C2CA4391BF234560081235C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C2CA4371BF234560081235C /* Main.storyboard */; };
 		5C2CA43B1BF234560081235C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C2CA43A1BF234560081235C /* Assets.xcassets */; };
 		5C2CA43E1BF234560081235C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C2CA43C1BF234560081235C /* LaunchScreen.storyboard */; };
+		5C5119351BF647A8001F708D /* SectionedTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */; };
 		5CA77A5C1BF5494D0035F065 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA77A5B1BF5494D0035F065 /* Common.swift */; };
 		5CA77A611BF54F020035F065 /* ViewController_UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA77A5E1BF54F020035F065 /* ViewController_UIExtensions.swift */; };
 		5CA77A621BF54F020035F065 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA77A5F1BF54F020035F065 /* ViewController.swift */; };
 		5CA77A631BF54F020035F065 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA77A601BF54F020035F065 /* ViewModel.swift */; };
 		5CE283431BF4F2FD00A0DB22 /* RxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */; };
 		5CE283491BF500AC00A0DB22 /* RxViewController_UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */; };
-		5CE2834B1BF5057500A0DB22 /* RxSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE2834A1BF5057500A0DB22 /* RxSwift.swift */; };
+		5CE2834B1BF5057500A0DB22 /* UITableView_Rx_Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE2834A1BF5057500A0DB22 /* UITableView_Rx_Additions.swift */; };
 		A831A637043A9DE8CB0DBBC1 /* Pods_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696F85F7492A47662363057B /* Pods_Test.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,14 +32,12 @@
 		5C2CA43A1BF234560081235C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5C2CA43D1BF234560081235C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5C2CA43F1BF234560081235C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SectionedTableViewDataSource.swift; path = RxAdditions/SectionedTableViewDataSource.swift; sourceTree = "<group>"; };
 		5CA77A5B1BF5494D0035F065 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
-		5CA77A5E1BF54F020035F065 /* ViewController_UIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController_UIExtensions.swift; path = nRx/ViewController_UIExtensions.swift; sourceTree = "<group>"; };
-		5CA77A5F1BF54F020035F065 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = nRx/ViewController.swift; sourceTree = "<group>"; };
-		5CA77A601BF54F020035F065 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewModel.swift; path = nRx/ViewModel.swift; sourceTree = "<group>"; };
 		5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = Rx/RxViewModel.swift; sourceTree = "<group>"; };
 		5CE283471BF4FC6800A0DB22 /* RxSwift.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RxSwift.playground; sourceTree = "<group>"; };
 		5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewController_UIExtensions.swift; path = Rx/RxViewController_UIExtensions.swift; sourceTree = "<group>"; };
-		5CE2834A1BF5057500A0DB22 /* RxSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxSwift.swift; path = RxAdditions/RxSwift.swift; sourceTree = "<group>"; };
+		5CE2834A1BF5057500A0DB22 /* UITableView_Rx_Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITableView_Rx_Additions.swift; path = RxAdditions/UITableView_Rx_Additions.swift; sourceTree = "<group>"; };
 		696F85F7492A47662363057B /* Pods_Test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F83AFB3347733B5212CB8C /* Pods-Test.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Test/Pods-Test.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,7 +110,8 @@
 		5CA77A5D1BF54E6E0035F065 /* RxAdditions */ = {
 			isa = PBXGroup;
 			children = (
-				5CE2834A1BF5057500A0DB22 /* RxSwift.swift */,
+				5CE2834A1BF5057500A0DB22 /* UITableView_Rx_Additions.swift */,
+				5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */,
 			);
 			name = RxAdditions;
 			sourceTree = "<group>";
@@ -269,11 +269,12 @@
 				5CA77A631BF54F020035F065 /* ViewModel.swift in Sources */,
 				5CE283431BF4F2FD00A0DB22 /* RxViewModel.swift in Sources */,
 				5C2CA4361BF234560081235C /* RxViewController.swift in Sources */,
+				5C5119351BF647A8001F708D /* SectionedTableViewDataSource.swift in Sources */,
 				5C2CA4341BF234560081235C /* AppDelegate.swift in Sources */,
 				5CA77A611BF54F020035F065 /* ViewController_UIExtensions.swift in Sources */,
 				5CA77A5C1BF5494D0035F065 /* Common.swift in Sources */,
 				5CA77A621BF54F020035F065 /* ViewController.swift in Sources */,
-				5CE2834B1BF5057500A0DB22 /* RxSwift.swift in Sources */,
+				5CE2834B1BF5057500A0DB22 /* UITableView_Rx_Additions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

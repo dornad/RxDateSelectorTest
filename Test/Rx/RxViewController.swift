@@ -16,7 +16,9 @@ public class RxViewController : UIViewController {
     var playgroundFrame:CGRect?
     let disposeBag = DisposeBag()
     
-    var viewModel:RxViewModel!
+    var dataSource: RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper<[RowDesc]>!
+    
+    var viewModel:RxViewModel = RxViewModel()
     
     public init(viewModel:RxViewModel, playgroundFrame:CGRect?) {
         super.init(nibName: nil, bundle: nil)
@@ -40,8 +42,6 @@ extension RxViewController {
             self.view.frame = fr
         }
         
-        self.viewModel = RxViewModel()
-        
         self.tableView = UITableView(frame: self.view!.frame, style: .Grouped)
         self.view?.addSubview(tableView)
         
@@ -54,24 +54,50 @@ extension RxViewController {
     
     func setupRx() {
         
-        self.viewModel.rows
-            .drive(self.tableView.rx_itemsWithCellAndSectionFactory)(cellFactory: { (tv:UITableView, ip:NSIndexPath, desc:DateSelectorRowDescriptor)
-                -> (rowHeight: CGFloat, cell: UITableViewCell) in
-                //
-                let cell = tv.dequeueReusableCellWithIdentifier("Cell", forIndexPath: ip)
-                self.setupCell(cell, rowDesc: desc)
-                return (UIConstants.rowHeight, cell)
-                //
-            })(sectionFactory: { (tv:UITableView, index:Int, desc:DateSelectorRowDescriptor)
-                -> (rowCount: Int, rowHeight: CGFloat, headerView: UIView?) in
-                //
-                let headerView = self.headerInSection(desc)
-                let numRowsInSection = desc.state == .Selected ? 1 : 0
-                return (numRowsInSection, UIConstants.sectionHeaderHeight, headerView)
-            })
+        self.dataSource = RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper(cellFactory: { (tv, s, r, item) -> UITableViewCell in
+            // setup a cell via Rx
+            let indexPath = NSIndexPath(forItem: r, inSection: s)
+            let cell = tv.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
+            self.setupCell(cell, rowDesc: item)
+            return cell
+        }) { (i:Int, item:RowDesc) -> Int in
+            // Get the number of rows to be displayed
+            return item.state == .Selected ? 1 : 0
+        }
+        
+        self.viewModel.rows.asObservable()
+            .bindTo(tableView.rx_itemsWithDataSource(dataSource))
+            .addDisposableTo(disposeBag)
+        
+        tableView.rx_setDelegate(self)
             .addDisposableTo(disposeBag)
     }
 }
+
+extension RxViewController : UITableViewDelegate {
+    
+    public func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UIConstants.sectionHeaderHeight
+    }
+    
+    public func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        guard let sectionDesc = self.dataSource.sectionAtIndex(section) else {
+            return nil
+        }
+        
+        return headerInSection(sectionDesc)
+    }
+    
+    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        return UIConstants.rowHeight
+    }
+    
+}
+
+// }
+
 
 
 
