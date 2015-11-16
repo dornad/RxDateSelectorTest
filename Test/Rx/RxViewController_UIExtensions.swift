@@ -200,18 +200,22 @@ extension RxViewController {
     }
     
     func sectionHeaderSwitchAccessory(rowDesc: RowDesc, withSuperview sv:UIView) -> UIView? {
+        
         guard rowDesc.type == .AllDay else {
             return nil
         }
         
         let allDaySwitch = UISwitch()
-        
         allDaySwitch.rx_value <-> self.viewModel.allDay
-        
         sv.addSubview(allDaySwitch)
         
         return allDaySwitch
     }
+}
+
+// MARK: Picker (Date and TimeZone) Setup
+
+extension RxViewController {
     
     func setupStartDatePicker(cell: UITableViewCell, rowDesc:RowDesc) {
         
@@ -220,17 +224,16 @@ extension RxViewController {
         }
         
         cell.datePicker.removeFromSuperview()
+        cell.timeZonePicker.removeFromSuperview()
+        
         cell.contentView.addSubview(cell.datePicker)
-        
         cell.datePicker.rx_date <-> self.viewModel.startDate
-        
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left
                 .right
                 .top
                 .bottom.equalTo(cell.contentView)
         }
-        
     }
     
     func setupEndDatePicker(cell: UITableViewCell, rowDesc:RowDesc) {
@@ -240,10 +243,10 @@ extension RxViewController {
         }
         
         cell.datePicker.removeFromSuperview()
+        cell.timeZonePicker.removeFromSuperview()
+        
         cell.contentView.addSubview(cell.datePicker)
-        
         cell.datePicker.rx_date <-> self.viewModel.endDate
-        
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left
                 .right
@@ -258,7 +261,9 @@ extension RxViewController {
             return
         }
         
+        cell.datePicker.removeFromSuperview()
         cell.timeZonePicker.removeFromSuperview()
+        
         cell.contentView.addSubview(cell.timeZonePicker)
         cell.timeZonePicker.snp_makeConstraints { (make) -> Void in
             make.left
