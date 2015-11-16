@@ -31,10 +31,14 @@ func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable 
     return StableCompositeDisposable.create(bindToUIDisposable, bindToVariable)
 }
 
-func <-> <T>(property: ControlProperty<T?>, variable: Variable<T?>) -> Disposable {
-    let bindToUIDisposable = variable
-        .bindTo(property)
+func <-> <T>(property: ControlProperty<T>, variable: Variable<T?>) -> Disposable {
+    let bindToUIDisposable =
+        variable
+            .filter({ $0 != nil })
+            .map { return $0! }
+            .bindTo(property)
     let bindToVariable = property
+        
         .subscribe(onNext: { n in
             variable.value = n
             }, onCompleted:  {
@@ -147,9 +151,7 @@ extension RxViewController {
             make.width.equalTo(150)
             make.height.equalTo(44)
             make.centerX.equalTo(sv)
-            
             make.centerY.equalTo(sv)
-            //make.top.equalTo(100)
         }
     }
     
@@ -163,26 +165,6 @@ extension RxViewController {
         headerLabel.snp_makeConstraints{ (make) -> Void in
             make.left.equalTo(sv).offset(10)
             make.centerY.equalTo(sv)
-        }
-    }
-    
-    func addGestureRecognizerTo(rowDesc:RowDesc, toView view:UIView) {
-        
-        guard rowDesc.type != .AllDay else {
-            return
-        }
-        
-        let singleTapRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("onTapInView:"))
-        singleTapRecognizer.numberOfTouchesRequired = 1
-        singleTapRecognizer.sectionType = rowDesc.type
-        singleTapRecognizer.numberOfTouchesRequired = 1
-        view.addGestureRecognizer(singleTapRecognizer)
-    }
-    
-    @objc func onTapInView(sender:UITapGestureRecognizer) {
-
-        if sender.state == .Ended {
-            self.viewModel.selectedRowType.value = sender.sectionType
         }
     }
     
@@ -240,7 +222,7 @@ extension RxViewController {
         cell.datePicker.removeFromSuperview()
         cell.contentView.addSubview(cell.datePicker)
         
-//        cell.datePicker.rx_date <-> self.viewModel.startDate
+        cell.datePicker.rx_date <-> self.viewModel.startDate
         
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left
@@ -260,7 +242,7 @@ extension RxViewController {
         cell.datePicker.removeFromSuperview()
         cell.contentView.addSubview(cell.datePicker)
         
-//        cell.datePicker.rx_date <-> self.viewModel.endDate
+        cell.datePicker.rx_date <-> self.viewModel.endDate
         
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left
@@ -268,9 +250,7 @@ extension RxViewController {
                 .top
                 .bottom.equalTo(cell.contentView)
         }
-        
     }
-    
     
     func setupTimezonePicker(cell: UITableViewCell, rowDesc:RowDesc) {
         
@@ -287,6 +267,34 @@ extension RxViewController {
                 .bottom.equalTo(cell.contentView)
         }
     }
+}
+
+// MARK: Interactivity
+
+extension RxViewController {
+    
+    func addGestureRecognizerTo(rowDesc:RowDesc, toView view:UIView) {
+        
+        guard rowDesc.type != .AllDay else {
+            return
+        }
+        
+        let singleTapRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("onTapInView:"))
+        singleTapRecognizer.numberOfTouchesRequired = 1
+        singleTapRecognizer.sectionType = rowDesc.type
+        singleTapRecognizer.numberOfTouchesRequired = 1
+        view.addGestureRecognizer(singleTapRecognizer)
+    }
+    
+    @objc func onTapInView(sender:UITapGestureRecognizer) {
+        
+        if sender.state == .Ended {
+            
+            self.viewModel.selectedRowType.value = sender.sectionType
+        }
+    }
+
+    
 }
 
 // MARK: UIGestureRecognizer Additions

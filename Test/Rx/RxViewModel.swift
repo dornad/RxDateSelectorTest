@@ -30,60 +30,94 @@ public class RxViewModel {
         
         self.dateFormatter.dateFormat = "EEE, MMM d, yyyy h:mm a"
         
-        self.startDate = Variable(NSDate())
-        self.endDate = Variable(NSDate())
+        self.startDate = Variable(startDate)
+        self.endDate = Variable(endDate)
         self.timeZone = Variable(timeZone)
         self.allDay = Variable(allDay)
         self.selectedRowType = Variable(nil)
         
+        if startDate == nil && endDate == nil {
+            self.startDate.value = NSDate()
+            self.selectedRowType.value = .StartDate
+        }
     }
 }
 
 extension RxViewModel {
     
+    private var observableForStartDate: Observable<SectionState> {
+        return self.testValue(self.startDate)
+    }
+    
+    private var observableForEndDate: Observable<SectionState> {
+        return self.testValue(self.endDate)
+    }
+    
+    private func testValue(startVariable : Variable<NSDate?>) -> Observable<SectionState> {
+        
+        return startVariable
+            .distinctUntilChanged({ (lhs, rhs) -> Bool in
+                
+                guard let rhs = rhs else {
+                    return false
+                }
+                
+                if let lhs = lhs {
+                    return abs( lhs.timeIntervalSinceDate(rhs) ) <= 60
+                }
+                
+                return true
+            })
+            .map { $0 == nil ? SectionState.Missing : SectionState.Present }
+    }
+    
     public var rows:Driver<[RowDesc]> {
         
-        return combineLatest(self.startDate,self.endDate,self.timeZone,self.selectedRowType){ d1, d2, _, selected -> [RowDesc] in
-            
-            var rows:[RowDesc] = [
-                (.StartDate,    .Missing),//d1 == nil ? .Missing : .Present),
-                (.EndDate,      .Missing),//d2 == nil ? .Missing : .Present),
-                (.TimeZone,     .Present),
-                (.AllDay,       .Missing)
-            ]
-            
-            if let selected = selected {
+        return combineLatest(self.observableForStartDate, self.observableForEndDate, self.timeZone, self.selectedRowType) {
+                value, value2, _, _ -> [RowDesc] in
                 
-                rows[selected.toInt()] = (selected, .Selected)
+                return [
+                    (.StartDate,    value),
+                    (.EndDate,      value2),
+                    (.TimeZone,     .Present),
+                    (.AllDay,       .Missing)
+                ]
             }
-            return rows
-        }
-        .asDriver(onErrorJustReturn:[])
-        
+            .map({ rows -> [RowDesc] in
+                
+                if let selected:SectionType = self.selectedRowType.value {
+                    var rs = rows
+                    rs[selected.toInt()] = (selected, SectionState.Selected)
+                    return rs
+                }
+                return rows
+            })
+            .asDriver(onErrorJustReturn:[])
     }
     
-    public func getStringObservableForRowType(type:DateSelectorSectionType) -> Observable<String> {        
-        return Variable( getStringForRowType(type) ).asObservable()
-    }
-    
-    private func getStringForRowType(type:SectionType) -> String {
-        
+    public func getStringObservableForRowType(type:DateSelectorSectionType) -> Observable<String> {
+
         if type.isDateType() {
             
-            // Special case: Return the current date if the selectedType is the value in the event pipe
-            if self.selectedRowType.value == type {
-                return self.dateFormatter.stringFromDate(NSDate())
-            }
-            
-            if let date = (type == .StartDate) ? self.startDate.value : self.endDate.value {
-                return self.dateFormatter.stringFromDate(date)
-            }
-            
-            // Finally, return the "empty" string
-            return "\"empty\""
+            return (type == .StartDate ? self.startDate : self.endDate)
+                .map({ date -> String in
+                    
+                    guard let date = date else {
+                        return ""
+                    }
+                    return self.dateFormatter.stringFromDate(date)
+                })
         }
+            
+        else if type == .TimeZone {
+            return self.timeZone
+                .map { return $0.name }
+                .asObservable()
+        }
+        
         else {
-            return self.timeZone.value.name
+            return Variable( "" ).asObservable()
         }
     }
+    
 }

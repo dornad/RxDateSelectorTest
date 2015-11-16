@@ -97,20 +97,28 @@ class RxTableViewReactiveSectionModelArrayDataSource<Element> : _RxTableViewReac
     // table view data source
     
     override func _numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return sectionModels?.count ?? 1
+        print("[_numberOfSectionsInTableView] ENTER")
+        return sectionModels?.count ?? 0
     }
     
     override func _tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sectionRowCount(section, sectionModels![section])
+        
+        print("[_tableView:numberOfRowsInSection] ENTER")
+        guard let sectionModel = self.sectionAtIndex(section) else {
+            return 0 // no rows in the datasource.
+        }
+        return sectionRowCount(section, sectionModel)
     }
     
     override func _tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        print("[_tableView:cellForRowAtIndexPath:] ENTER")
         return cellFactory(tableView, indexPath.section, indexPath.row, sectionModels![indexPath.section])
     }
     
     // reactive
     
     func tableView(tableView: UITableView, observedElements: [Element]) {
+        print("[tableView:observedElements:] observedElements = \(observedElements)")
         self.sectionModels = observedElements
         tableView.reloadData()
     }
