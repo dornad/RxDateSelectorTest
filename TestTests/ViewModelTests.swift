@@ -8,7 +8,34 @@
 
 import XCTest
 
+import RxSwift
+import RxCocoa
+import RxBlocking
+
+import Test
+
+func ==(lhs:RowDesc, rhs:RowDesc) -> Bool {
+    
+    return lhs.state == rhs.state && lhs.type == rhs.type
+}
+
+
+func ==(lhs:[RowDesc], rhs:[RowDesc]) -> Bool {
+    
+    guard lhs.count == rhs.count else {
+        return false
+    }
+    
+    return lhs[0] == rhs[0] &&
+        lhs[1] == rhs[1] &&
+        lhs[2] == rhs[2] &&
+        lhs[3] == rhs[3]
+}
+
+
 class ViewModelTests: XCTestCase {
+    
+    let disposableBag = DisposeBag()
     
     override func setUp() {
         super.setUp()
@@ -20,10 +47,138 @@ class ViewModelTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testStartDateComesPreselectedWhenNotPassingArguments() {
+
+        let expected:[RowDesc] = [
+            (.StartDate,    .Selected),
+            (.EndDate,      .Missing),
+            (.TimeZone,     .Present),
+            (.AllDay,       .Missing)
+        ]
+        
+        let viewModel = RxViewModel()
+        
+        var latestValueFromRow: [RowDesc]? = nil
+        
+        let d = viewModel.rows
+            .asObservable()
+            .subscribeNext { (rows) -> Void in
+                latestValueFromRow = rows
+            }
+        
+        defer {
+            d.dispose()
+        }
+        
+        XCTAssertTrue(latestValueFromRow! == expected, "These two are not equal: \(latestValueFromRow), expected: \(expected)")
     }
+    
+    func testEndDateCanBeSelected() {
+        
+        let expected:[RowDesc] = [
+            (.StartDate,    .Present),
+            (.EndDate,      .Selected),
+            (.TimeZone,     .Present),
+            (.AllDay,       .Missing)
+        ]
+        
+        let viewModel = RxViewModel()
+        
+        var latestValueFromRow: [RowDesc]? = nil
+        
+        let d = viewModel.rows
+            .asObservable()
+            .subscribeNext { (rows) -> Void in
+                latestValueFromRow = rows
+        }
+        
+        viewModel.selectedRowType.value = .EndDate
+        
+        defer {
+            d.dispose()
+        }
+        
+        XCTAssertTrue(latestValueFromRow! == expected, "These two are not equal: \(latestValueFromRow), expected: \(expected)")
+    }
+    
+    func testTimeZoneCanBeSelected() {
+        
+        let expected:[RowDesc] = [
+            (.StartDate,    .Present),
+            (.EndDate,      .Missing),
+            (.TimeZone,     .Selected),
+            (.AllDay,       .Missing)
+        ]
+        
+        let viewModel = RxViewModel()
+        
+        var latestValueFromRow: [RowDesc]? = nil
+        
+        let d = viewModel.rows
+            .asObservable()
+            .subscribeNext { (rows) -> Void in
+                latestValueFromRow = rows
+        }
+        
+        viewModel.selectedRowType.value = .TimeZone
+        
+        defer {
+            d.dispose()
+        }
+        
+        XCTAssertTrue(latestValueFromRow! == expected, "These two are not equal: \(latestValueFromRow), expected: \(expected)")
+    }
+    
+    func testAllDayCannotBeSelected() {
+        
+        let viewModel = RxViewModel()
+        
+        var latestValueFromRow: [RowDesc]? = nil
+        
+        let d = viewModel.rows
+            .asObservable()
+            .subscribeNext { (rows) -> Void in
+                latestValueFromRow = rows
+        }
+        
+        viewModel.selectedRowType.value = .AllDay
+        
+        defer {
+            d.dispose()
+        }
+        
+        XCTAssertTrue(latestValueFromRow![3].type == .AllDay)
+        XCTAssertTrue(latestValueFromRow![3].state != SectionState.Selected)
+    }
+    
+    func testSelectionsAreExclusive() {
+        
+        let viewModel = RxViewModel()
+        
+        var latestValueFromRow: [RowDesc]? = nil
+        
+        let d = viewModel.rows
+            .asObservable()
+            .subscribeNext { (rows) -> Void in
+                latestValueFromRow = rows
+        }
+        
+        viewModel.selectedRowType.value = .StartDate
+        viewModel.selectedRowType.value = .EndDate
+        viewModel.selectedRowType.value = .TimeZone
+        
+        defer {
+            d.dispose()
+        }
+        
+        var count = 0
+        for row in latestValueFromRow! {
+            count += row.state == .Selected ? 1 : 0
+        }
+        
+        XCTAssertEqual(count, 1, "Only one element should appear as selected")
+    }
+
     
     func testPerformanceExample() {
         // This is an example of a performance test case.

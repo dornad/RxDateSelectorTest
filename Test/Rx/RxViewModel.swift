@@ -85,7 +85,7 @@ extension RxViewModel {
             }
             .map({ rows -> [RowDesc] in
                 
-                if let selected:SectionType = self.selectedRowType.value {
+                if let selected:SectionType = self.selectedRowType.value where self.selectedRowType.value != SectionType.AllDay {
                     var rs = rows
                     rs[selected.toInt()] = (selected, SectionState.Selected)
                     return rs
