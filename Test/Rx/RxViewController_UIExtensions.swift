@@ -525,6 +525,6 @@ extension UITableViewCell: UIPickerViewDataSource, UIPickerViewDelegate {
     public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         // TODO: Connect the picker view and the view model.
         let selectedName = NSTimeZone.knownTimeZoneNames()[row]
-        print("you selected: \(selectedName)")        
+        print("you selected: \(selectedName)")
     }
 }

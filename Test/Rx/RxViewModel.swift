@@ -10,9 +10,14 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+// MARK: ViewModel - Properties, transformers and initializers
+
 public class RxViewModel {
     
     // Properties
+    
+    // technically these properties are reactive, but we are listing them here
+    // because they hold our data.
     
     public var startDate:Variable<NSDate?>
     public var endDate:Variable<NSDate?>
@@ -24,7 +29,7 @@ public class RxViewModel {
     
     public let dateFormatter:NSDateFormatter = NSDateFormatter()
     
-    // Init
+    // Initializers
     
     required public init(startDate:NSDate? = nil, endDate:NSDate? = nil, timeZone:NSTimeZone = NSTimeZone.localTimeZone(), allDay: Bool=false) {
         
@@ -43,47 +48,67 @@ public class RxViewModel {
     }
 }
 
+// MARK: ViewModel - Reactive methods and properties
+
 extension RxViewModel {
     
+    /// Converts the start date variable into a SectionState observable.
     private var observableForStartDate: Observable<SectionState> {
-        return self.testValue(self.startDate)
+        return self.transformDateVariableIntoObservable(self.startDate)
     }
     
+    /// Converts the start date variable into a SectionState observable.
     private var observableForEndDate: Observable<SectionState> {
-        return self.testValue(self.endDate)
+        return self.transformDateVariableIntoObservable(self.endDate)
     }
     
-    private func testValue(startVariable : Variable<NSDate?>) -> Observable<SectionState> {
-        
+    /**
+     Performs the transformation from a NSDate -> SectionState.
+     
+     - parameter startVariable: Left side of our transformation equation:  
+     An Observable (implemented as a Variable) wrapping a date object.
+     
+     - returns: A Observable wrapping the corresponding SectionState.
+     */
+    private func transformDateVariableIntoObservable(startVariable : Variable<NSDate?>) -> Observable<SectionState> {
         return startVariable
             .distinctUntilChanged({ (lhs, rhs) -> Bool in
+                
+                // This closure ensures that we are only sending events when the changes
+                // between dates are more than 1 minute.
                 
                 guard let rhs = rhs else {
                     return false
                 }
-                
                 if let lhs = lhs {
                     return abs( lhs.timeIntervalSinceDate(rhs) ) <= 60
                 }
-                
                 return true
             })
             .map { $0 == nil ? SectionState.Missing : SectionState.Present }
     }
     
+    /// The reactive source of data.
     public var rows:Driver<[RowDesc]> {
         
-        return combineLatest(self.observableForStartDate, self.observableForEndDate, self.timeZone, self.selectedRowType) {
-                value, value2, _, _ -> [RowDesc] in
-                
+        // We are merging our data objects (NSDate, NSDate, NSTimeZone, Bool) and an additional property (which is the "current" selected row).
+        // and producing a list of type RowDesc from it.
+        
+        // self.selectedRowType is included in here to ensure that changes in the selected row propagate down the Rx pipe.
+        
+        return combineLatest(self.observableForStartDate, self.observableForEndDate, self.allDay, self.timeZone, self.selectedRowType) {
+                value, value2, value3, _, _ -> [RowDesc] in
+                // Build our list of RowDesc.
                 return [
                     (.StartDate,    value),
                     (.EndDate,      value2),
-                    (.TimeZone,     .Present),
-                    (.AllDay,       .Missing)
+                    (.TimeZone,     .Present), // Timezone is always present (will always be set to the user's local timezone)
+                    (.AllDay,       value3 ? .Present : .Missing)
                 ]
             }
             .map({ rows -> [RowDesc] in
+                
+                // This map function inserts the "Selected" values in the outgoing data.
                 
                 if let selected:SectionType = self.selectedRowType.value where self.selectedRowType.value != SectionType.AllDay {
                     var rs = rows
@@ -95,9 +120,20 @@ extension RxViewModel {
             .asDriver(onErrorJustReturn:[])
     }
     
-    public func getStringObservableForRowType(type:DateSelectorSectionType) -> Observable<String> {
+    /**
+     Converts the data described by a SectionType object into a String observable.
+     
+     Used to create the "reactive" values of the labels in the table section header views.
+     
+     - parameter type: Which section do we want its value.
+     
+     - returns: An observable holding the (requested) transformed value
+     */
+    public func getStringObservableForRowType(type:SectionType) -> Observable<String> {
 
         if type.isDateType() {
+            
+            // dates will use the dataFormatter property.
             
             return (type == .StartDate ? self.startDate : self.endDate)
                 .map({ date -> String in
@@ -110,11 +146,15 @@ extension RxViewModel {
         }
             
         else if type == .TimeZone {
+            
+            // Timezones simply use their name property.
             return self.timeZone
                 .map { return $0.name }
                 .asObservable()
         }
         
+        // everything else just returns an empty string.
+            
         else {
             return Variable( "" ).asObservable()
         }
