@@ -327,8 +327,7 @@ extension RxViewController {
             return
         }
         
-        cell.datePicker.removeFromSuperview()
-        cell.timeZonePicker.removeFromSuperview()
+        cell.removePickers()
         cell.contentView.addSubview(cell.datePicker)
         
         // Two way binding allows bidirectional changes:
@@ -360,8 +359,7 @@ extension RxViewController {
             return
         }
         
-        cell.datePicker.removeFromSuperview()
-        cell.timeZonePicker.removeFromSuperview()
+        cell.removePickers()
         cell.contentView.addSubview(cell.timeZonePicker)
         
         // RxSwift has no reactive extension for UIPickerView
@@ -474,6 +472,18 @@ extension UITableViewCell  {
         set {
             objc_setAssociatedObject(self, &AssociatedKeys.TimeZonePicker, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
+    }
+    
+    /**
+     Calls removeFromSuperview() on the two pickers (datePicker, timeZonePicker) and remove the associated values
+     */
+    func removePickers() {
+        
+        self.datePicker.removeFromSuperview()
+        self.timeZonePicker.removeFromSuperview()
+        
+        objc_setAssociatedObject(self, &AssociatedKeys.DatePicker, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &AssociatedKeys.TimeZonePicker, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }
 
