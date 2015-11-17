@@ -128,9 +128,9 @@ extension RxViewController {
      
      - returns: An UIView? instance.
      */
-    func headerInSection(sectionDesc:SectionDesc) -> UIView? {
+    public func headerInSection(sectionDesc:SectionDesc) -> UIView? {
         
-        let header = UIView(frame: CGRectZero)
+        let header = UIView(frame: CGRectMake(0, 0, 180, UIConstants.sectionHeaderHeight))
         sectionHeaderLabel(sectionDesc, withSuperview: header)
         sectionHeaderAccessory(sectionDesc, withSuperview: header)
         lineSeparator(withSuperview: header)
@@ -149,8 +149,7 @@ extension RxViewController {
      */
     func setupCell(cell:UITableViewCell, sectionDesc:SectionDesc) {
         
-        setupStartDatePicker(cell, sectionDesc: sectionDesc)
-        setupEndDatePicker(cell, sectionDesc: sectionDesc)
+        setupDatePicker(cell, sectionDesc: sectionDesc)
         setupTimezonePicker(cell, sectionDesc: sectionDesc)
     }
     
@@ -315,15 +314,15 @@ extension RxViewController {
 extension RxViewController {
     
     /**
-     Perform the configuration of the table row cell as a date picker for the start date.
+     Perform the configuration of the table row cell as a date picker.
      
      - parameter cell:    The UITableViewCell instance that will be configured
      - parameter sectionDesc: A model that describes how should the cell be configured
      */
-    func setupStartDatePicker(cell: UITableViewCell, sectionDesc:SectionDesc) {
+    func setupDatePicker(cell: UITableViewCell, sectionDesc:SectionDesc) {
         
-        guard sectionDesc.type == .StartDate else {
-            // Exit when the row type is not the start date.
+        guard sectionDesc.type.isDateType() else {
+            // Exit when the row type is not a Date Type
             return
         }
         
@@ -334,37 +333,11 @@ extension RxViewController {
         // Two way binding allows bidirectional changes:
         // - a change on the view model triggers a change on the UI element
         // - a change on the UIElement triggers a change on the view model.
-        cell.datePicker.rx_date <-> self.viewModel.startDate
-        
-        cell.datePicker.snp_makeConstraints { (make) -> Void in
-            make.left
-                .right
-                .top
-                .bottom.equalTo(cell.contentView)
+        if  sectionDesc.type == .StartDate {
+            cell.datePicker.rx_date <-> self.viewModel.startDate
+        } else {
+            cell.datePicker.rx_date <-> self.viewModel.endDate
         }
-    }
-    
-    /**
-     Perform the configuration of the table row cell as a date picker for the end date.
-     
-     - parameter cell:    The UITableViewCell instance that will be configured
-     - parameter sectionDesc: A model that describes how should the cell be configured
-     */
-    func setupEndDatePicker(cell: UITableViewCell, sectionDesc:SectionDesc) {
-        
-        guard sectionDesc.type == .EndDate else {
-            // Exit when the row type is not the end date.
-            return
-        }
-        
-        cell.datePicker.removeFromSuperview()
-        cell.timeZonePicker.removeFromSuperview()
-        cell.contentView.addSubview(cell.datePicker)
-        
-        // Two way binding allows bidirectional changes:
-        // - a change on the view model triggers a change on the UI element
-        // - a change on the UIElement triggers a change on the view model.
-        cell.datePicker.rx_date <-> self.viewModel.endDate
         
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left

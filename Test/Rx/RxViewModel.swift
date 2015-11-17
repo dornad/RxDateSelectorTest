@@ -27,7 +27,7 @@ public class RxViewModel {
     
     // Helpers and Transformers
     
-    public let dateFormatter:NSDateFormatter = NSDateFormatter()
+    let dateFormatter:NSDateFormatter = NSDateFormatter()
     
     // Initializers
     
@@ -52,16 +52,6 @@ public class RxViewModel {
 
 extension RxViewModel {
     
-    /// Converts the start date variable into a SectionState observable.
-    private var observableForStartDate: Observable<SectionState> {
-        return self.transformDateVariableIntoObservable(self.startDate)
-    }
-    
-    /// Converts the start date variable into a SectionState observable.
-    private var observableForEndDate: Observable<SectionState> {
-        return self.transformDateVariableIntoObservable(self.endDate)
-    }
-    
     /**
      Performs the transformation from a NSDate -> SectionState.
      
@@ -71,53 +61,58 @@ extension RxViewModel {
      - returns: A Observable wrapping the corresponding SectionState.
      */
     private func transformDateVariableIntoObservable(startVariable : Variable<NSDate?>) -> Observable<SectionState> {
-        return startVariable
-            .distinctUntilChanged({ (lhs, rhs) -> Bool in
-                
-                // This closure ensures that we are only sending events when the changes
-                // between dates are more than 1 minute.
-                
-                guard let rhs = rhs else {
-                    return false
-                }
-                if let lhs = lhs {
-                    return abs( lhs.timeIntervalSinceDate(rhs) ) <= 60
-                }
-                return true
-            })
-            .map { $0 == nil ? SectionState.Missing : SectionState.Present }
+        
+        // distinctUntilChanged : ensure that we events are only generated when the changes between dates are more than 1 minute.
+        
+        return startVariable.distinctUntilChanged({ (lhs, rhs) -> Bool in
+            guard let rhs = rhs else {
+                return false
+            }
+            if let lhs = lhs {
+                return abs( lhs.timeIntervalSinceDate(rhs) ) <= 60
+            }
+            return true
+        })
+            
+        // map: Convert from NSDate? -> SectionState
+            
+        .map { $0 == nil ? SectionState.Missing : SectionState.Present }
     }
     
-    /// The reactive source of data.
+    /**
+    The reactive source of data.
+    
+    We are merging our data objects (NSDate, NSDate, NSTimeZone, Bool) and an additional property (which is the "current" selected row).
+    and producing a list of type SectionDesc from it.  self.selectedRowType is included in here to ensure that changes in the selected
+    row propagate down the Rx pipe.
+    */
     public var rows:Driver<[SectionDesc]> {
         
-        // We are merging our data objects (NSDate, NSDate, NSTimeZone, Bool) and an additional property (which is the "current" selected row).
-        // and producing a list of type SectionDesc from it.
+        // @see transformDateVariableIntoObservable: for an explanation of these lines.
+        let startDateObs = transformDateVariableIntoObservable(self.startDate)
+        let endDateObs = transformDateVariableIntoObservable(self.endDate)
         
-        // self.selectedRowType is included in here to ensure that changes in the selected row propagate down the Rx pipe.
+        // ensure that we events are only generated when the boolean value "flips"
+        let allDayObs = self.allDay.distinctUntilChanged()
+            .map { $0 ? SectionState.Present : SectionState.Missing }
         
-        return combineLatest(self.observableForStartDate, self.observableForEndDate, self.allDay, self.timeZone, self.selectedRowType) {
-                value, value2, value3, _, _ -> [SectionDesc] in
-                // Build our list of SectionDesc.
-                return [
-                    (.StartDate,    value),
-                    (.EndDate,      value2),
-                    (.TimeZone,     .Present), // Timezone is always present (will always be set to the user's local timezone)
-                    (.AllDay,       value3 ? .Present : .Missing)
-                ]
+        return combineLatest(startDateObs, endDateObs, allDayObs, self.timeZone, self.selectedRowType) { d1, d2, aD, _, _ -> [SectionDesc] in
+            return [
+                (.StartDate,    d1),
+                (.EndDate,      d2),
+                (.TimeZone,     .Present), // Timezone is always present (will always be set to the user's local timezone)
+                (.AllDay,       aD)
+            ]
+        }
+        .map({ rows -> [SectionDesc] in
+            if let selected:SectionType = self.selectedRowType.value where self.selectedRowType.value != SectionType.AllDay {
+                var rs = rows
+                rs[selected.toInt()] = (selected, SectionState.Selected)
+                return rs
             }
-            .map({ rows -> [SectionDesc] in
-                
-                // This map function inserts the "Selected" values in the outgoing data.
-                
-                if let selected:SectionType = self.selectedRowType.value where self.selectedRowType.value != SectionType.AllDay {
-                    var rs = rows
-                    rs[selected.toInt()] = (selected, SectionState.Selected)
-                    return rs
-                }
-                return rows
-            })
-            .asDriver(onErrorJustReturn:[])
+            return rows
+        })
+        .asDriver(onErrorJustReturn:[])
     }
     
     /**
