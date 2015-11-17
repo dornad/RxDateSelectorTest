@@ -19,7 +19,7 @@ public typealias RowIndex = Int
 
  // MARK: Functions used in RxSwift that are not exposed by the framework.
 
-private func rxAbstractMethod<T>() -> T {
+func rxAbstractMethod<T>() -> T {
     rxFatalError("Abstract method")
 }
 

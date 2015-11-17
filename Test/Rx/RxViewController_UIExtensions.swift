@@ -232,6 +232,8 @@ extension RxViewController {
         headerLabel.text = sectionDesc.type.toTitleString()
         sv.addSubview(headerLabel)
         
+        // TODO: Add a circular "x" button when the label is part of a "selected" section.
+        
         headerLabel.snp_makeConstraints{ (make) -> Void in
             make.left.equalTo(sv).offset(10)
             make.centerY.equalTo(sv)
@@ -361,10 +363,8 @@ extension RxViewController {
         
         cell.removePickers()
         cell.contentView.addSubview(cell.timeZonePicker)
-        
-        // RxSwift has no reactive extension for UIPickerView
-
-        // TODO: Create a Rx extension for UIPickerView
+        cell.timeZonePicker.delegate = self
+        cell.timeZonePicker.dataSource = self
         
         cell.timeZonePicker.snp_makeConstraints { (make) -> Void in
             make.left
@@ -463,8 +463,6 @@ extension UITableViewCell  {
             var picker = objc_getAssociatedObject(self, &AssociatedKeys.TimeZonePicker) as? UIPickerView
             if picker == nil {
                 picker = UIPickerView()
-                picker?.delegate = self
-                picker?.dataSource = self
                 self.timeZonePicker = picker!
             }
             return picker!
@@ -491,7 +489,7 @@ extension UITableViewCell  {
 
 // (this will probably be removed once we implement a Rx datasource)
 
-extension UITableViewCell: UIPickerViewDataSource, UIPickerViewDelegate {
+extension RxViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
@@ -507,8 +505,7 @@ extension UITableViewCell: UIPickerViewDataSource, UIPickerViewDelegate {
     }
     
     public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        // TODO: Connect the picker view and the view model.
         let selectedName = NSTimeZone.knownTimeZoneNames()[row]
-        print("you selected: \(selectedName)")
+        self.viewModel.timeZone.value = NSTimeZone(name: selectedName)!
     }
 }
