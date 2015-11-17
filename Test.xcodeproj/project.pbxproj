@@ -20,7 +20,6 @@
 		5CB8661F1BFA8790002962AE /* ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB8661E1BFA8790002962AE /* ViewModelTests.swift */; };
 		5CE283431BF4F2FD00A0DB22 /* RxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */; };
 		5CE283491BF500AC00A0DB22 /* RxViewController_UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */; };
-		5CE2834B1BF5057500A0DB22 /* UITableView_Rx_Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE2834A1BF5057500A0DB22 /* UITableView_Rx_Additions.swift */; };
 		A831A637043A9DE8CB0DBBC1 /* Pods_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696F85F7492A47662363057B /* Pods_Test.framework */; };
 /* End PBXBuildFile section */
 
@@ -51,7 +50,6 @@
 		5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = Rx/RxViewModel.swift; sourceTree = "<group>"; };
 		5CE283471BF4FC6800A0DB22 /* RxSwift.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RxSwift.playground; sourceTree = "<group>"; };
 		5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewController_UIExtensions.swift; path = Rx/RxViewController_UIExtensions.swift; sourceTree = "<group>"; };
-		5CE2834A1BF5057500A0DB22 /* UITableView_Rx_Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITableView_Rx_Additions.swift; path = RxAdditions/UITableView_Rx_Additions.swift; sourceTree = "<group>"; };
 		696F85F7492A47662363057B /* Pods_Test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F83AFB3347733B5212CB8C /* Pods-Test.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Test/Pods-Test.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -132,7 +130,6 @@
 		5CA77A5D1BF54E6E0035F065 /* RxAdditions */ = {
 			isa = PBXGroup;
 			children = (
-				5CE2834A1BF5057500A0DB22 /* UITableView_Rx_Additions.swift */,
 				5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */,
 			);
 			name = RxAdditions;
@@ -325,7 +322,6 @@
 				5CA77A611BF54F020035F065 /* (null) in Sources */,
 				5CA77A5C1BF5494D0035F065 /* Common.swift in Sources */,
 				5CA77A621BF54F020035F065 /* (null) in Sources */,
-				5CE2834B1BF5057500A0DB22 /* UITableView_Rx_Additions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
