@@ -85,8 +85,9 @@ extension RxViewController {
         static let tableFooterFrame:CGRect      = CGRectMake(0, 0, 180, 150)
         
         // Table Section Constants
-        static let sectionHeaderHeight:CGFloat      = 40
-        static let sectionHeaderLabelFrame:CGRect   = CGRect(x: 0, y: 0, width: 180, height: UIConstants.sectionHeaderHeight)
+        static let sectionHeaderHeight:CGFloat      = 50
+        static let sectionHeaderViewFrame:CGRect    = CGRect(x: 0, y: 0, width: 180, height: UIConstants.sectionHeaderHeight)
+        static let sectionHeaderLabelFrame:CGRect   = UIConstants.sectionHeaderViewFrame
         
         // Table Row Constants
         static let rowHeight:CGFloat = 180
@@ -130,7 +131,7 @@ extension RxViewController {
      */
     public func headerInSection(sectionDesc:SectionDesc) -> UIView? {
         
-        let header = UIView(frame: CGRectMake(0, 0, 180, UIConstants.sectionHeaderHeight))
+        let header = UIView(frame: UIConstants.sectionHeaderViewFrame)
         sectionHeaderLabel(sectionDesc, withSuperview: header)
         sectionHeaderAccessory(sectionDesc, withSuperview: header)
         lineSeparator(withSuperview: header)

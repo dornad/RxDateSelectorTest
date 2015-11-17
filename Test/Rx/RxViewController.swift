@@ -63,6 +63,7 @@ extension RxViewController {
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.tableFooterView = tableFooterView()
+        self.tableView.sectionFooterHeight = 0
         
         setupRx()
     }
@@ -76,7 +77,7 @@ extension RxViewController {
         /**
         *  A variant of Rx's reactive UITableView datasource that can handle our ViewModel's models (type SectionDesc).
         * 
-        *  It has two closures:  A cellFactory and a sectionHeaderViewFactory.
+        *  It has two closures:  A "cell factory" and a sectionRowCount closure.
         *
         *  @return A Reactive datasource.
         */
@@ -86,12 +87,11 @@ extension RxViewController {
             let cell = tv.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
             self.setupCell(cell, sectionDesc: item)
             return cell
-            }) { (i:Int, item:SectionDesc) -> Int in
-            // Get the number of rows to be displayed
+        }) { (i:Int, item:SectionDesc) -> Int in // sectionRowCount closure
             return item.state == .Selected ? 1 : 0
         }
         
-        // In here we connect the rows Rx property to the datasource.
+        // Connect the rows property to the datasource.
         self.viewModel.rows.asObservable()
             .bindTo(tableView.rx_itemsWithDataSource(dataSource))
             .addDisposableTo(disposeBag)
