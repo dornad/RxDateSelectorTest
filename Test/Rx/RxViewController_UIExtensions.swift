@@ -14,10 +14,21 @@ import SnapKit
 
 // MARK: Two Way binding operator
 
-// Two way binding operator between control property and variable, that's all it takes {
+/**
+*  A "<->" operator that will allow us to create two-way bindings.
+*/
 infix operator <-> {
 }
 
+/**
+ Implementation of the two-way binding operator between a ControlProperty<T>
+ and a Variable<T>.
+ 
+ - parameter property: The property from the UI element that we want to bind against.
+ - parameter variable: An Observable source that we want to watch as well.
+ 
+ - returns: A composite binding between the property and the Variable
+ */
 func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable {
     let bindToUIDisposable = variable
         .bindTo(property)
@@ -31,6 +42,16 @@ func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable 
     return StableCompositeDisposable.create(bindToUIDisposable, bindToVariable)
 }
 
+/**
+ Implementation of the two-way binding operator between a ControlProperty<T>
+ and an (optional) Variable<T?>.
+ 
+ - parameter property: The property from the UI element that we want to bind against.
+ - parameter variable: An Observable source that we want to watch as well, but that it may 
+ not have a value.
+ 
+ - returns: A composite binding between the property and the Variable
+ */
 func <-> <T>(property: ControlProperty<T>, variable: Variable<T?>) -> Disposable {
     let bindToUIDisposable =
         variable
@@ -53,6 +74,9 @@ func <-> <T>(property: ControlProperty<T>, variable: Variable<T?>) -> Disposable
 
 extension RxViewController {
     
+    /**
+     *  Constants for SnapKit.
+     */
     internal struct UIConstants {
         
         // Table Constants
@@ -68,6 +92,11 @@ extension RxViewController {
         static let rowHeight:CGFloat = 180
     }
     
+    /**
+     Returns the table's header view.
+     
+     - returns: An UIView? instance.
+     */
     func tableHeaderView() -> UIView? {
         
         // for some reason snapkit doesn't like working with the header and footer.
@@ -78,6 +107,11 @@ extension RxViewController {
         return sv
     }
     
+    /**
+     Returns the table's footer view.
+     
+     - returns: An UIView? type
+     */
     func tableFooterView() -> UIView? {
         
         // for some reason snapkit doesn't like working with the header and footer.
@@ -87,6 +121,13 @@ extension RxViewController {
         return sv
     }
     
+    /**
+     Returns the header (UIView?) for a specific table.
+     
+     - parameter rowDesc: A model that describes how should the header be built
+     
+     - returns: An UIView? instance.
+     */
     func headerInSection(rowDesc:RowDesc) -> UIView? {
         
         let header = UIView(frame: CGRectZero)
@@ -98,6 +139,14 @@ extension RxViewController {
         return header
     }
     
+    /**
+     Perform setup of a UITableViewCell that was (recently) dequed for a specific NSIndexPath
+     
+     More specifically, this method will create the picker(s), according to data inside the 'rowDesc' param
+     
+     - parameter cell:    the cell we are setting up.
+     - parameter rowDesc: A model that describes how to configure the cell.
+     */
     func setupCell(cell:UITableViewCell, rowDesc:RowDesc) {
         
         setupStartDatePicker(cell, rowDesc: rowDesc)
@@ -107,10 +156,15 @@ extension RxViewController {
     
 }
 
-// MARK: UIControl functions (reusable)
+// MARK: UIControl build functions (reusable)
 
 extension RxViewController {
     
+    /**
+     Util function that adds a label to a UIView.  Used in the table header.
+     
+     - parameter sv: the superview to attach the label to
+     */
     func tableHeaderLabel(withSuperview sv:UIView) {
         
         let label: UILabel = UILabel(frame: CGRectZero)
@@ -124,6 +178,11 @@ extension RxViewController {
         }
     }
     
+    /**
+     Util function that adds a line separator to a UIView.  Used in table header, sections header views and table footers
+     
+     - parameter sv: the superview to attach the separator to
+     */
     func lineSeparator(withSuperview sv:UIView) {
         let separator = UIView()
         separator.backgroundColor = UIColor(red: 0.557, green: 0.557, blue: 0.576, alpha: 1)
@@ -138,6 +197,11 @@ extension RxViewController {
         }
     }
     
+    /**
+     Util function that adds button to a UIView superview.  Used for the "save" button in the table footer view.
+     
+     - parameter sv: the superview to attach the label to
+     */
     func tableFooterButton(withSuperview sv:UIView) {
         let button: UIButton = UIButton(type: .Custom)
         button.backgroundColor = UIColor.blackColor()
@@ -155,6 +219,12 @@ extension RxViewController {
         }
     }
     
+    /**
+     Util function that builds the section header view's label.
+     
+     - parameter rowDesc: A model that describes how should the header be built
+     - parameter sv:      The root UIView of the section header view.
+     */
     func sectionHeaderLabel(rowDesc:RowDesc , withSuperview sv:UIView) {
         
         let headerLabel: UILabel = UILabel(frame: UIConstants.sectionHeaderLabelFrame)
@@ -168,6 +238,15 @@ extension RxViewController {
         }
     }
     
+    /**
+     Util function that builds the section header accessory.  
+     
+     The accessory is determined by the data in the rowDesc param, and it can be either
+     a label or a UISwitch.
+     
+     - parameter rowDesc: A model that describes how should the accessory be built
+     - parameter sv:      The root UIView of the section header view.
+     */
     func sectionHeaderAccessory(rowDesc:RowDesc, withSuperview sv:UIView) {
         
         var accessory = sectionHeaderLabelAccessory(rowDesc, withSuperview: sv)
@@ -181,6 +260,12 @@ extension RxViewController {
         }
     }
     
+    /**
+     Util function that builds and configure a UILabel as a section header accessory.
+     
+     - parameter rowDesc: A model that describes how should the accessory be built
+     - parameter sv:      The root UIView of the section header view.
+     */
     func sectionHeaderLabelAccessory(rowDesc:RowDesc, withSuperview sv:UIView) -> UIView? {
         
         guard ((rowDesc.type.isDateType() || rowDesc.type == .TimeZone ) && rowDesc.state != .Missing) else {
@@ -192,6 +277,7 @@ extension RxViewController {
         label.font = UIFont.helveticaNeueLightFontWithSize(16)
         sv.addSubview(label)
         
+        // Bind the label's text to the ViewModel's respective data.
         self.viewModel.getStringObservableForRowType(rowDesc.type)
             .bindTo(label.rx_text)
             .addDisposableTo(self.disposeBag)
@@ -199,6 +285,12 @@ extension RxViewController {
         return label
     }
     
+    /**
+     Util function that builds and configure a UISwitch as a section header accessory.
+     
+     - parameter rowDesc: A model that describes how should the accessory be built
+     - parameter sv:      The root UIView of the section header view.
+     */
     func sectionHeaderSwitchAccessory(rowDesc: RowDesc, withSuperview sv:UIView) -> UIView? {
         
         guard rowDesc.type == .AllDay else {
@@ -206,28 +298,44 @@ extension RxViewController {
         }
         
         let allDaySwitch = UISwitch()
+        
+        // Two way binding allows bidirectional changes: 
+        // - a change on the view model triggers a change on the UI element
+        // - a change on the UIElement triggers a change on the view model.
         allDaySwitch.rx_value <-> self.viewModel.allDay
+        
         sv.addSubview(allDaySwitch)
         
         return allDaySwitch
     }
 }
 
-// MARK: Picker (Date and TimeZone) Setup
+// MARK: Picker (Date and TimeZone) Configuration
 
 extension RxViewController {
     
+    /**
+     Perform the configuration of the table row cell as a date picker for the start date.
+     
+     - parameter cell:    The UITableViewCell instance that will be configured
+     - parameter rowDesc: A model that describes how should the cell be configured
+     */
     func setupStartDatePicker(cell: UITableViewCell, rowDesc:RowDesc) {
         
         guard rowDesc.type == .StartDate else {
+            // Exit when the row type is not the start date.
             return
         }
         
         cell.datePicker.removeFromSuperview()
         cell.timeZonePicker.removeFromSuperview()
-        
         cell.contentView.addSubview(cell.datePicker)
+        
+        // Two way binding allows bidirectional changes:
+        // - a change on the view model triggers a change on the UI element
+        // - a change on the UIElement triggers a change on the view model.
         cell.datePicker.rx_date <-> self.viewModel.startDate
+        
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left
                 .right
@@ -236,17 +344,28 @@ extension RxViewController {
         }
     }
     
+    /**
+     Perform the configuration of the table row cell as a date picker for the end date.
+     
+     - parameter cell:    The UITableViewCell instance that will be configured
+     - parameter rowDesc: A model that describes how should the cell be configured
+     */
     func setupEndDatePicker(cell: UITableViewCell, rowDesc:RowDesc) {
         
         guard rowDesc.type == .EndDate else {
+            // Exit when the row type is not the end date.
             return
         }
         
         cell.datePicker.removeFromSuperview()
         cell.timeZonePicker.removeFromSuperview()
-        
         cell.contentView.addSubview(cell.datePicker)
+        
+        // Two way binding allows bidirectional changes:
+        // - a change on the view model triggers a change on the UI element
+        // - a change on the UIElement triggers a change on the view model.
         cell.datePicker.rx_date <-> self.viewModel.endDate
+        
         cell.datePicker.snp_makeConstraints { (make) -> Void in
             make.left
                 .right
@@ -255,6 +374,12 @@ extension RxViewController {
         }
     }
     
+    /**
+     Perform the configuration of the table row cell as a picker for the timezone
+     
+     - parameter cell:    The UITableViewCell instance that will be configured
+     - parameter rowDesc: A model that describes how should the cell be configured
+     */
     func setupTimezonePicker(cell: UITableViewCell, rowDesc:RowDesc) {
         
         guard rowDesc.type == .TimeZone else {
@@ -263,8 +388,12 @@ extension RxViewController {
         
         cell.datePicker.removeFromSuperview()
         cell.timeZonePicker.removeFromSuperview()
-        
         cell.contentView.addSubview(cell.timeZonePicker)
+        
+        // RxSwift has no reactive extension for UIPickerView
+
+        // TODO: Create a Rx extension for UIPickerView
+        
         cell.timeZonePicker.snp_makeConstraints { (make) -> Void in
             make.left
                 .right
@@ -278,8 +407,15 @@ extension RxViewController {
 
 extension RxViewController {
     
+    /**
+     Adds a gesture recognizer to a view.
+     
+     - parameter rowDesc: A model that describes the current section.
+     - parameter view:    the view where we will attach the UIGestureRecognizer
+     */
     func addGestureRecognizerTo(rowDesc:RowDesc, toView view:UIView) {
         
+        // We are adding gesture recognizer on all section header's, except for the "All Day" section
         guard rowDesc.type != .AllDay else {
             return
         }
@@ -291,6 +427,11 @@ extension RxViewController {
         view.addGestureRecognizer(singleTapRecognizer)
     }
     
+    /**
+     Callback action for the Tap Gesture Recognizer.
+     
+     - parameter sender: The Tap Gesture Recognizer.
+     */
     @objc func onTapInView(sender:UITapGestureRecognizer) {
         
         if sender.state == .Ended {
@@ -298,7 +439,6 @@ extension RxViewController {
             self.viewModel.selectedRowType.value = sender.sectionType
         }
     }
-
     
 }
 
@@ -309,6 +449,7 @@ extension UIGestureRecognizer {
         static var SectionType = "pp_SectionType"
     }
     
+    /// Use Associated Objects to add a SectionType property to the UIGestureRecognizer
     var sectionType:SectionType {
         get {
             let value = objc_getAssociatedObject(self, &AssociatedKeys.SectionType) as! Int
@@ -322,18 +463,14 @@ extension UIGestureRecognizer {
 
 // MARK: UITableViewCell Additions
 
-protocol RxDateAndTimeZonePicker {
-    var datePicker:UIDatePicker { get set }
-    var timeZonePicker:UIPickerView {get set}
-}
-
-extension UITableViewCell : RxDateAndTimeZonePicker {
+extension UITableViewCell  {
     
     private struct AssociatedKeys {
         static var DatePicker = "pp_DatePicker"
         static var TimeZonePicker = "pp_TimeZonePicker"
     }
-    
+
+    /// Use Associated Objects to add a date picker property to the UITableViewCell
     var datePicker:UIDatePicker {
         get {
             var picker = objc_getAssociatedObject(self, &AssociatedKeys.DatePicker) as? UIDatePicker
@@ -348,6 +485,7 @@ extension UITableViewCell : RxDateAndTimeZonePicker {
         }
     }
     
+    /// Use Associated Objects to add a time zone picker property to the UITableViewCell
     var timeZonePicker:UIPickerView {
         get {
             var picker = objc_getAssociatedObject(self, &AssociatedKeys.TimeZonePicker) as? UIPickerView
@@ -365,6 +503,10 @@ extension UITableViewCell : RxDateAndTimeZonePicker {
     }
 }
 
+// MARK: - UIPickerViewDataSource, UIPickerViewDelegate implementations inside UITableViewCell.
+
+// (this will probably be removed once we implement a Rx datasource)
+
 extension UITableViewCell: UIPickerViewDataSource, UIPickerViewDelegate {
     
     public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
@@ -381,8 +523,8 @@ extension UITableViewCell: UIPickerViewDataSource, UIPickerViewDelegate {
     }
     
     public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
+        // TODO: Connect the picker view and the view model.
         let selectedName = NSTimeZone.knownTimeZoneNames()[row]
-        print("you selected: \(selectedName)")
+        print("you selected: \(selectedName)")        
     }
 }
