@@ -12,8 +12,12 @@ import RxCocoa
 import RxSwift
 import RxBlocking
 
+ // MARK: Type Aliases for indices types
+
 public typealias SectionIndex = Int
 public typealias RowIndex = Int
+
+ // MARK: Functions used in RxSwift that are not exposed by the framework.
 
 private func rxAbstractMethod<T>() -> T {
     rxFatalError("Abstract method")
@@ -33,16 +37,20 @@ func bindingErrorToInterface(error: ErrorType) {
     #endif
 }
 
+// MARK: Protocols
+
+/**
+*  A protocol describing a Section DataSource (Generic)
+*/
 public protocol SectionDataSource {
 
     typealias Section
-    
     func sectionAtIndex(index: Int) -> Section?
 }
 
+// MARK: DataSource class hierarchy
 
-// RxCocoa Extension
-
+/// Base class for a TableView reactive datasource.  Not to be used directly.
 class _RxTableViewReactiveSectionModelArrayDataSource: NSObject, UITableViewDataSource {
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -73,13 +81,18 @@ class _RxTableViewReactiveSectionModelArrayDataSource: NSObject, UITableViewData
     
 }
 
-// Please take a look at `DelegateProxyType.swift`
+// A subclass that specializes _RxTableViewReactiveSectionModelArrayDataSource by adding bindings between the 
+// UITableViewDataSource methods, the models from our Observable source, and our two factory closures.
+//
+// This class is not meant to be used directly.
 class RxTableViewReactiveSectionModelArrayDataSource<Element> : _RxTableViewReactiveSectionModelArrayDataSource, SectionDataSource {
     
-    typealias SectionRowCount = (Int, Element) -> Int
+    // Our factory types
     
+    typealias SectionRowCount = (Int, Element) -> Int
     typealias CellFactory = (UITableView, Int, Int, Element) -> UITableViewCell
     
+    // The section models (from our Observable source)
     var sectionModels: [Element]? = nil
     
     func sectionAtIndex(index: Int) -> Element? {
@@ -97,33 +110,29 @@ class RxTableViewReactiveSectionModelArrayDataSource<Element> : _RxTableViewReac
     // table view data source
     
     override func _numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        print("[_numberOfSectionsInTableView] ENTER")
         return sectionModels?.count ?? 0
     }
     
     override func _tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        print("[_tableView:numberOfRowsInSection] ENTER")
         guard let sectionModel = self.sectionAtIndex(section) else {
-            return 0 // no rows in the datasource.
+            return 0
         }
         return sectionRowCount(section, sectionModel)
     }
     
     override func _tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        print("[_tableView:cellForRowAtIndexPath:] ENTER")
         return cellFactory(tableView, indexPath.section, indexPath.row, sectionModels![indexPath.section])
     }
     
-    // reactive
+    // reactive setter.
     
     func tableView(tableView: UITableView, observedElements: [Element]) {
-        print("[tableView:observedElements:] observedElements = \(observedElements)")
         self.sectionModels = observedElements
         tableView.reloadData()
     }
 }
 
+/// A wrapper that allows our datasource to adopt Swift's SequenceType.
 class RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper<S: SequenceType> : RxTableViewReactiveSectionModelArrayDataSource<S.Generator.Element>
 , RxTableViewDataSourceType {
     typealias Element = S
@@ -136,6 +145,12 @@ class RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper<S: SequenceT
         self.init(cellFactory: cellFactory, sectionRowCount: sectionRowCount)
     }
     
+    /**
+     Handles an incoming event from a Rx pipe.
+     
+     - parameter tableView:     the UITableView this data source is working with.
+     - parameter observedEvent: The incoming event from the Rx pipeline.
+     */
     func tableView(tableView: UITableView, observedEvent: Event<S>) {
         switch observedEvent {
         case .Next(let value):
