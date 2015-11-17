@@ -85,12 +85,12 @@ extension RxViewController {
         static let tableFooterFrame:CGRect      = CGRectMake(0, 0, 180, 150)
         
         // Table Section Constants
-        static let sectionHeaderHeight:CGFloat      = 50
+        static let sectionHeaderHeight:CGFloat      = 40
         static let sectionHeaderViewFrame:CGRect    = CGRect(x: 0, y: 0, width: 180, height: UIConstants.sectionHeaderHeight)
         static let sectionHeaderLabelFrame:CGRect   = UIConstants.sectionHeaderViewFrame
         
         // Table Row Constants
-        static let rowHeight:CGFloat = 180
+        static let rowHeight:CGFloat = 214
     }
     
     /**
