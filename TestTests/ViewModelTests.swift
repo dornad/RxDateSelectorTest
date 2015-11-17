@@ -14,12 +14,12 @@ import RxBlocking
 
 import Test
 
-func ==(lhs:RowDesc, rhs:RowDesc) -> Bool {
+func ==(lhs:SectionDesc, rhs:SectionDesc) -> Bool {
     
     return lhs.state == rhs.state && lhs.type == rhs.type
 }
 
-func ==(lhs:[RowDesc], rhs:[RowDesc]) -> Bool {
+func ==(lhs:[SectionDesc], rhs:[SectionDesc]) -> Bool {
     
     guard lhs.count == rhs.count else {
         return false
@@ -35,7 +35,7 @@ class ViewModelTests: XCTestCase {
     
     func testStartDateComesPreselectedWhenNotPassingArguments() {
 
-        let expected:[RowDesc] = [
+        let expected:[SectionDesc] = [
             (.StartDate,    .Selected),
             (.EndDate,      .Missing),
             (.TimeZone,     .Present),
@@ -44,7 +44,7 @@ class ViewModelTests: XCTestCase {
         
         let viewModel = RxViewModel()
         
-        var latestValueFromRow: [RowDesc]? = nil
+        var latestValueFromRow: [SectionDesc]? = nil
         
         let d = viewModel.rows
             .asObservable()
@@ -61,7 +61,7 @@ class ViewModelTests: XCTestCase {
     
     func testEndDateCanBeSelected() {
         
-        let expected:[RowDesc] = [
+        let expected:[SectionDesc] = [
             (.StartDate,    .Present),
             (.EndDate,      .Selected),
             (.TimeZone,     .Present),
@@ -70,7 +70,7 @@ class ViewModelTests: XCTestCase {
         
         let viewModel = RxViewModel()
         
-        var latestValueFromRow: [RowDesc]? = nil
+        var latestValueFromRow: [SectionDesc]? = nil
         
         let d = viewModel.rows
             .asObservable()
@@ -89,7 +89,7 @@ class ViewModelTests: XCTestCase {
     
     func testTimeZoneCanBeSelected() {
         
-        let expected:[RowDesc] = [
+        let expected:[SectionDesc] = [
             (.StartDate,    .Present),
             (.EndDate,      .Missing),
             (.TimeZone,     .Selected),
@@ -98,7 +98,7 @@ class ViewModelTests: XCTestCase {
         
         let viewModel = RxViewModel()
         
-        var latestValueFromRow: [RowDesc]? = nil
+        var latestValueFromRow: [SectionDesc]? = nil
         
         let d = viewModel.rows
             .asObservable()
@@ -119,7 +119,7 @@ class ViewModelTests: XCTestCase {
         
         let viewModel = RxViewModel()
         
-        var latestValueFromRow: [RowDesc]? = nil
+        var latestValueFromRow: [SectionDesc]? = nil
         
         let d = viewModel.rows
             .asObservable()
@@ -141,7 +141,7 @@ class ViewModelTests: XCTestCase {
         
         let viewModel = RxViewModel()
         
-        var latestValueFromRow: [RowDesc]? = nil
+        var latestValueFromRow: [SectionDesc]? = nil
         
         let d = viewModel.rows
             .asObservable()

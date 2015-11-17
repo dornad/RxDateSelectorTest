@@ -89,16 +89,16 @@ extension RxViewModel {
     }
     
     /// The reactive source of data.
-    public var rows:Driver<[RowDesc]> {
+    public var rows:Driver<[SectionDesc]> {
         
         // We are merging our data objects (NSDate, NSDate, NSTimeZone, Bool) and an additional property (which is the "current" selected row).
-        // and producing a list of type RowDesc from it.
+        // and producing a list of type SectionDesc from it.
         
         // self.selectedRowType is included in here to ensure that changes in the selected row propagate down the Rx pipe.
         
         return combineLatest(self.observableForStartDate, self.observableForEndDate, self.allDay, self.timeZone, self.selectedRowType) {
-                value, value2, value3, _, _ -> [RowDesc] in
-                // Build our list of RowDesc.
+                value, value2, value3, _, _ -> [SectionDesc] in
+                // Build our list of SectionDesc.
                 return [
                     (.StartDate,    value),
                     (.EndDate,      value2),
@@ -106,7 +106,7 @@ extension RxViewModel {
                     (.AllDay,       value3 ? .Present : .Missing)
                 ]
             }
-            .map({ rows -> [RowDesc] in
+            .map({ rows -> [SectionDesc] in
                 
                 // This map function inserts the "Selected" values in the outgoing data.
                 

@@ -99,8 +99,8 @@
 			children = (
 				5CA77A5A1BF548A10035F065 /* Rx */,
 				5CA77A5D1BF54E6E0035F065 /* RxAdditions */,
-				5C2CA4331BF234560081235C /* AppDelegate.swift */,
 				5CA77A5B1BF5494D0035F065 /* Common.swift */,
+				5C2CA4331BF234560081235C /* AppDelegate.swift */,
 				5C2CA4371BF234560081235C /* Main.storyboard */,
 				5C2CA43A1BF234560081235C /* Assets.xcassets */,
 				5C2CA43C1BF234560081235C /* LaunchScreen.storyboard */,

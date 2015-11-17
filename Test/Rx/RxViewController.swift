@@ -22,7 +22,7 @@ public class RxViewController : UIViewController {
     let disposeBag = DisposeBag()
     
     /// Reactive datasource, used in the table view delegate.
-    var dataSource: RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper<[RowDesc]>!
+    var dataSource: RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper<[SectionDesc]>!
     
     /// Our ViewModel, initialized with its default values
     var viewModel:RxViewModel = RxViewModel()
@@ -74,7 +74,7 @@ extension RxViewController {
     func setupRx() {
         
         /**
-        *  A variant of Rx's reactive UITableView datasource that can handle our ViewModel's models (type RowDesc).
+        *  A variant of Rx's reactive UITableView datasource that can handle our ViewModel's models (type SectionDesc).
         * 
         *  It has two closures:  A cellFactory and a sectionHeaderViewFactory.
         *
@@ -84,9 +84,9 @@ extension RxViewController {
             // setup a cell via Rx
             let indexPath = NSIndexPath(forItem: r, inSection: s)
             let cell = tv.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
-            self.setupCell(cell, rowDesc: item)
+            self.setupCell(cell, sectionDesc: item)
             return cell
-        }) { (i:Int, item:RowDesc) -> Int in
+            }) { (i:Int, item:SectionDesc) -> Int in
             // Get the number of rows to be displayed
             return item.state == .Selected ? 1 : 0
         }
