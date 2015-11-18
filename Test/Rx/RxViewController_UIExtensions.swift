@@ -90,7 +90,8 @@ extension RxViewController {
         static let sectionHeaderLabelFrame:CGRect   = UIConstants.sectionHeaderViewFrame
         
         // Table Row Constants
-        static let rowHeight:CGFloat = 214
+        static let rowHeightClosed:CGFloat      = 10
+        static let rowHeightExpanded:CGFloat    = 214
     }
     
     /**
@@ -149,11 +150,34 @@ extension RxViewController {
      - parameter sectionDesc: A model that describes how to configure the cell.
      */
     func setupCell(cell:UITableViewCell, sectionDesc:SectionDesc) {
-        
         setupDatePicker(cell, sectionDesc: sectionDesc)
         setupTimezonePicker(cell, sectionDesc: sectionDesc)
+        animateCellHeightChange(cell)
     }
     
+    func animateCellHeightChange(cell: UITableViewCell) {
+        
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            var constraint : Constraint? = nil
+            
+            cell.contentView.snp_remakeConstraints { (make) -> Void in
+                constraint = make.height.equalTo(0)
+                    .offset(UIConstants.rowHeightClosed)
+                    .constraint
+            }
+            
+            constraint?.updateOffset(UIConstants.rowHeightExpanded)
+            cell.contentView.setNeedsLayout()
+            
+            UIView.animateWithDuration(0.9) { () -> Void in
+                cell.contentView.layoutIfNeeded()
+            }
+            
+            self.tableView.beginUpdates()
+            self.tableView.endUpdates()
+        }
+    }
 }
 
 // MARK: UIControl build functions (reusable)

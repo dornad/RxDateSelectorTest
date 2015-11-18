@@ -63,7 +63,10 @@ extension RxViewController {
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.tableFooterView = tableFooterView()
-        self.tableView.sectionFooterHeight = 0
+        self.tableView.sectionFooterHeight = 1
+
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = UIConstants.rowHeightClosed
         
         setupRx()
     }
@@ -117,9 +120,4 @@ extension RxViewController : UITableViewDelegate {
         }
         return headerInSection(sectionDesc)
     }
-    
-    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return UIConstants.rowHeight
-    }
-    
 }
