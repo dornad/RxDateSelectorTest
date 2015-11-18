@@ -9,6 +9,7 @@
 import UIKit
 
 import RxSwift
+import SnapKit
 
 public class RxViewController : UIViewController {
     
@@ -26,6 +27,12 @@ public class RxViewController : UIViewController {
     
     /// Our ViewModel, initialized with its default values
     var viewModel:RxViewModel = RxViewModel()
+    
+    /// A Constraint for the table cell height when they are closed (~10 px)
+    var rowHeightClosedConstraint: Constraint? = nil
+    
+    /// A Constraint for the table cell height when they are open ( equal to cell.contentView.superview.height)
+    var rowHeightOpenConstraint: Constraint? = nil
     
     /**
      Initializer for Playground testing.

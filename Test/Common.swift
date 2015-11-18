@@ -20,11 +20,11 @@ extension UIFont {
     // For testing purposes we are not including helvetica neue in the test project.  We are mapping this to the system font.
     
     public static func helveticaNeueLightFontWithSize(size:CGFloat) -> UIFont {
-        return UIFont.systemFontOfSize(size)
+        return UIFont(name: "HelveticaNeue-Light", size: size) ?? UIFont.systemFontOfSize(size)
     }
     
     public static func helveticaNeueMediumFontWithSize(size:CGFloat) -> UIFont {
-        return UIFont.systemFontOfSize(size)
+        return UIFont(name: "HelveticaNeue-Medium", size: size) ?? UIFont.systemFontOfSize(size)
     }
 }
 

@@ -97,6 +97,7 @@
 		5C2CA4321BF234560081235C /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				5CF281861BFCC91800982D0E /* Fonts */,
 				5CA77A5A1BF548A10035F065 /* Rx */,
 				5CA77A5D1BF54E6E0035F065 /* RxAdditions */,
 				5CA77A5B1BF5494D0035F065 /* Common.swift */,
@@ -142,6 +143,13 @@
 				5CB866201BFA8790002962AE /* Info.plist */,
 			);
 			path = TestTests;
+			sourceTree = "<group>";
+		};
+		5CF281861BFCC91800982D0E /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Fonts;
 			sourceTree = "<group>";
 		};
 		998F8AAE80D030CEC728AC51 /* Pods */ = {

@@ -155,26 +155,40 @@ extension RxViewController {
         animateCellHeightChange(cell)
     }
     
+    /**
+     Performs a "expading" animation on the table cell.
+     
+     The animation is performed by adding/removing two different height constraints, and asking the 
+     cell contentView property to layout itself.
+     
+     - parameter cell:        the cell we are animating
+     */
     func animateCellHeightChange(cell: UITableViewCell) {
         
+        cell.contentView.snp_remakeConstraints { (make) -> Void in
+            make.width.equalTo(cell.contentView.superview!.snp_width)
+            self.rowHeightClosedConstraint = make.height
+                .equalTo(UIConstants.rowHeightClosed)
+                .constraint
+            self.rowHeightOpenConstraint = make.height
+                .equalTo(UIConstants.rowHeightExpanded)
+                .priorityLow()
+                .constraint
+        }
+        
+        // Animations must occur in the main queue.
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             
-            var constraint : Constraint? = nil
+            self.tableView.beginUpdates()
             
-            cell.contentView.snp_remakeConstraints { (make) -> Void in
-                constraint = make.height.equalTo(0)
-                    .offset(UIConstants.rowHeightClosed)
-                    .constraint
-            }
+            self.rowHeightOpenConstraint?.activate()
+            self.rowHeightClosedConstraint?.deactivate()
             
-            constraint?.updateOffset(UIConstants.rowHeightExpanded)
             cell.contentView.setNeedsLayout()
-            
             UIView.animateWithDuration(0.9) { () -> Void in
                 cell.contentView.layoutIfNeeded()
             }
             
-            self.tableView.beginUpdates()
             self.tableView.endUpdates()
         }
     }
@@ -365,12 +379,10 @@ extension RxViewController {
             cell.datePicker.rx_date <-> self.viewModel.endDate
         }
         
-        cell.datePicker.snp_makeConstraints { (make) -> Void in
-            make.left
-                .right
-                .top
-                .bottom.equalTo(cell.contentView)
-        }
+        cell.datePicker.snp_remakeConstraints(closure: { (make) -> Void in
+            make.width.equalTo(cell.contentView.superview!.snp_width)
+            make.height.equalTo(cell.contentView.snp_height)
+        })
     }
     
     /**
