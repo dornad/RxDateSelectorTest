@@ -152,7 +152,7 @@ extension RxViewController {
     func setupCell(cell:UITableViewCell, sectionDesc:SectionDesc) {
         setupDatePicker(cell, sectionDesc: sectionDesc)
         setupTimezonePicker(cell, sectionDesc: sectionDesc)
-        animateCellHeightChange(cell)
+        animateCellHeightChange(cell, sectionDesc: sectionDesc)
     }
     
     /**
@@ -163,7 +163,12 @@ extension RxViewController {
      
      - parameter cell:        the cell we are animating
      */
-    func animateCellHeightChange(cell: UITableViewCell) {
+    func animateCellHeightChange(cell: UITableViewCell, sectionDesc : SectionDesc) {
+        
+        guard false else {
+            // Animation should only occur when selection is changing
+            return
+        }
         
         cell.contentView.snp_remakeConstraints { (make) -> Void in
             make.width.equalTo(cell.contentView.superview!.snp_width)
@@ -444,7 +449,7 @@ extension RxViewController {
         
         if sender.state == .Ended {
             
-            self.viewModel.selectedRowType.value = sender.sectionType
+            self.viewModel.selectedRowType.currentSelection = sender.sectionType
         }
     }
     

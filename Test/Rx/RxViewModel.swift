@@ -10,6 +10,52 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+// MARK: SelectedRowType Struct
+
+/** A struct that isolates logic around selection, including Rx behavior.
+
+Usage :
+
+```
+let selectedRow = SelectedRowType()
+
+let reactiveData = selectedRow._currentSelection
+    .asObservable()
+    .subscribeNext { (selectedRowType:SectionType) -> Void in
+        // do something with the data
+    }
+
+selectedRow.currentSelection = SectionType.StartDate
+```
+*/
+public struct SelectedRowType {
+    
+    private var _previousSelection:SectionType?
+    private var _currentSelection:Variable<SectionType?>
+    
+    public var currentSelection: SectionType? {
+        get {
+            return _currentSelection.value
+        }
+        set(newValue) {
+            
+            guard newValue != SectionType.AllDay else {
+                return
+            }
+            
+            if let existingSelection = _currentSelection.value {
+                _previousSelection = existingSelection
+            }
+            
+            _currentSelection.value = newValue
+        }
+    }
+    
+    init() {
+        self._currentSelection = Variable(nil)
+    }
+}
+
 // MARK: ViewModel - Properties, transformers and initializers
 
 public class RxViewModel {
@@ -23,7 +69,8 @@ public class RxViewModel {
     public var endDate:Variable<NSDate?>
     public var timeZone:Variable<NSTimeZone>
     public var allDay:Variable<Bool>
-    public var selectedRowType:Variable<SectionType?>
+    
+    public var selectedRowType:SelectedRowType
     
     // Helpers and Transformers
     
@@ -39,11 +86,11 @@ public class RxViewModel {
         self.endDate = Variable(endDate)
         self.timeZone = Variable(timeZone)
         self.allDay = Variable(allDay)
-        self.selectedRowType = Variable(nil)
+        self.selectedRowType = SelectedRowType()
         
         if startDate == nil && endDate == nil {
             self.startDate.value = NSDate()
-            self.selectedRowType.value = .StartDate
+            self.selectedRowType.currentSelection = .StartDate
         }
     }
 }
@@ -52,33 +99,25 @@ public class RxViewModel {
 
 extension RxViewModel {
     
-    /**
-     Performs the transformation from a NSDate -> SectionState.
-     
-     - parameter startVariable: Left side of our transformation equation:  
-     An Observable (implemented as a Variable) wrapping a date object.
-     
-     - returns: A Observable wrapping the corresponding SectionState.
-     */
-    private func transformDateVariableIntoObservable(startVariable : Variable<NSDate?>) -> Observable<SectionState> {
+    // distinctUntilChanged : ensure that we events are only generated when the changes between dates are more than 1 minute.    
+    
+    private func dateComparer( lhs:NSDate?, rhs:NSDate? ) -> Bool {
         
-        // distinctUntilChanged : ensure that we events are only generated when the changes between dates are more than 1 minute.
-        
-        return startVariable.distinctUntilChanged({ (lhs, rhs) -> Bool in
-            guard let rhs = rhs else {
-                return false
-            }
-            if let lhs = lhs {
-                return abs( lhs.timeIntervalSinceDate(rhs) ) <= 60
-            }
-            return true
-        })
+        guard let rhs = rhs else {
+            return false
+        }
+        if let lhs = lhs {
             
-        // map: Convert from NSDate? -> SectionState
-            
-        .map { $0 == nil ? SectionState.Missing : SectionState.Present }
+            return abs( lhs.timeIntervalSinceDate(rhs) ) <= 60
+        }
+        return true
     }
     
+    private func timeZoneComparer( lhs:NSTimeZone, rhs:NSTimeZone ) -> Bool {
+        
+        return lhs != rhs
+    }
+
     /**
     The reactive source of data.
     
@@ -87,32 +126,33 @@ extension RxViewModel {
     row propagate down the Rx pipe.
     */
     public var rows:Driver<[SectionDesc]> {
+
+        // For each model (NSDate?, NSDate?, NSTimeZone, Bool) transform the Variable<model> into its corresponding SectionState.
         
-        // @see transformDateVariableIntoObservable: for an explanation of these lines.
-        let startDateObs = transformDateVariableIntoObservable(self.startDate)
-        let endDateObs = transformDateVariableIntoObservable(self.endDate)
-        
-        // ensure that we events are only generated when the boolean value "flips"
-        let allDayObs = self.allDay.distinctUntilChanged()
-            .map { $0 ? SectionState.Present : SectionState.Missing }
-        
-        return combineLatest(startDateObs, endDateObs, allDayObs, self.timeZone, self.selectedRowType) { d1, d2, aD, _, _ -> [SectionDesc] in
-            return [
-                (.StartDate,    d1),
-                (.EndDate,      d2),
-                (.TimeZone,     .Present), // Timezone is always present (will always be set to the user's local timezone)
-                (.AllDay,       aD)
-            ]
-        }
-        .map({ rows -> [SectionDesc] in
-            if let selected:SectionType = self.selectedRowType.value where self.selectedRowType.value != SectionType.AllDay {
-                var rs = rows
-                rs[selected.toInt()] = (selected, SectionState.Selected)
-                return rs
+        return combineLatest(self.startDate, self.endDate, self.timeZone, self.allDay, self.selectedRowType._currentSelection) { (sDate, eDate, _, _, _) -> [SectionDesc] in
+            
+            let startDateState:SectionState = (sDate != nil) ? .Present : .Missing
+            let endDateState:SectionState = (eDate != nil) ? .Present : .Missing
+            
+                return [
+                    (.StartDate, startDateState, .NotSelected),
+                    (.EndDate,   endDateState,   .NotSelected),
+                    (.TimeZone,  .Present,       .NotSelected),
+                    (.AllDay,    .Present,       .NotSelected)
+                ]
             }
-            return rows
-        })
-        .asDriver(onErrorJustReturn:[])
+            .map { (rows) -> [SectionDesc] in
+                
+                if let selected:SectionType = self.selectedRowType.currentSelection {
+                    
+                    var mutableRows = rows
+                    let index = selected.toInt()
+                    mutableRows[index] = (selected, rows[index].state, .Selected)
+                    return mutableRows
+                }
+                return rows
+            }
+            .asDriver(onErrorJustReturn: [])
     }
     
     /**

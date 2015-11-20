@@ -98,7 +98,7 @@ extension RxViewController {
             self.setupCell(cell, sectionDesc: item)
             return cell
         }) { (i:Int, item:SectionDesc) -> Int in // sectionRowCount closure
-            return item.state == .Selected ? 1 : 0
+            return item.selectionState == .Selected ? 1 : 0
         }
         
         // Connect the rows property to the datasource.

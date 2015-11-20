@@ -8,11 +8,6 @@
 
 import UIKit
 
-// MARK: Type Aliases
-
-/// A SectionDesc (short for SectionDesc Descriptor) is a tuple between a SectionType and its state.
-public typealias SectionDesc = (type:SectionType, state:SectionState)
-
 // MARK: Custom Fonts
 
 extension UIFont {
@@ -111,19 +106,35 @@ extension SectionType {
     }
 }
 
-// MARK: SectionState
+// MARK: Section State
 
 /**
  
  An enumeration describing the possible states of a Section.
  
- - Present:  The data in the ViewModel holds a value.
+ - Missing:  A data model in the ViewModel doesn't hold a value.
  
- - Missing:  The data in the ViewModel is optional, and it currently doesn't hold a value
- 
- - Selected: The data in the ViewModel holds a value, but is currently being edited.
- 
+ - Present:  A data model in the ViewModel is currently holding a value, and it hasn't changed.
+
+ - Dirty: A data model in the ViewModel has a value, and it differs from its initial state.
+
  */
 public enum SectionState {
-    case Present, Missing, Selected;
+    case Present, Missing, Dirty;
 }
+
+/**
+ A enumeration describing if the section is selected or not..
+ 
+ - NotSelected: The section has not been selected.
+ - Selected:    The section has been selected.
+ */
+public enum SectionSelection {
+    case NotSelected, Selected
+}
+
+
+// MARK: Type Aliases
+
+/// A SectionDesc (short for SectionDesc Descriptor) is a tuple between SectionType and SectionState.
+public typealias SectionDesc = (type:SectionType, state:SectionState, selectionState:SectionSelection)
