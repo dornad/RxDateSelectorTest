@@ -11,10 +11,22 @@ import UIKit
 import RxSwift
 import SnapKit
 
+/**
+ *  A protocol used for Table View Cells that should display a picker.
+ */
 protocol PickerCellType {
+    
+    /**
+     Configure the cell.
+     
+     - parameter sectionDesc: A SectionDesc instance
+     - parameter viewModel:   ViewModel
+     - parameter disposeBag:  dispose bag
+     */
     func setup(sectionDesc: SectionDesc, viewModel:RxViewModel, disposeBag: DisposeBag)
 }
 
+/// A Cell that displays a date picker for the end date of an event
 class EndDatePickerTableViewCell : StartDatePickerTableViewCell {
     
     override func setup(sectionDesc: SectionDesc, viewModel: RxViewModel, disposeBag: DisposeBag) {
@@ -39,6 +51,7 @@ class EndDatePickerTableViewCell : StartDatePickerTableViewCell {
     }
 }
 
+/// A Cell that displays a date picker for the start date of an event
 class StartDatePickerTableViewCell : UITableViewCell, PickerCellType {
     
     var picker:UIDatePicker

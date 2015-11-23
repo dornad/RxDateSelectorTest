@@ -12,64 +12,6 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-// MARK: Two Way binding operator
-
-/**
-*  A "<->" operator that will allow us to create two-way bindings.
-*/
-infix operator <-> {
-}
-
-/**
- Implementation of the two-way binding operator between a ControlProperty<T>
- and a Variable<T>.
- 
- - parameter property: The property from the UI element that we want to bind against.
- - parameter variable: An Observable source that we want to watch as well.
- 
- - returns: A composite binding between the property and the Variable
- */
-func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable {
-    let bindToUIDisposable = variable
-        .bindTo(property)
-    let bindToVariable = property
-        .subscribe(onNext: { n in
-            variable.value = n
-            }, onCompleted:  {
-                bindToUIDisposable.dispose()
-        })
-    
-    return StableCompositeDisposable.create(bindToUIDisposable, bindToVariable)
-}
-
-/**
- Implementation of the two-way binding operator between a ControlProperty<T>
- and an (optional) Variable<T?>.
- 
- - parameter property: The property from the UI element that we want to bind against.
- - parameter variable: An Observable source that we want to watch as well, but that it may 
- not have a value.
- 
- - returns: A composite binding between the property and the Variable
- */
-func <-> <T>(property: ControlProperty<T>, variable: Variable<T?>) -> Disposable {
-    let bindToUIDisposable =
-        variable
-            .filter({ $0 != nil })
-            .map { return $0! }
-            .bindTo(property)
-    let bindToVariable = property
-        
-        .subscribe(onNext: { n in
-            variable.value = n
-            }, onCompleted:  {
-                bindToUIDisposable.dispose()
-        })
-    
-    return StableCompositeDisposable.create(bindToUIDisposable, bindToVariable)
-}
-
-
 // MARK: Constants, Header, Footer and Cell Setup
 
 extension RxViewController {
@@ -304,16 +246,15 @@ extension RxViewController {
             return nil
         }
         
-        // Two way binding is disabled for now...
         let allDaySwitch = UISwitch()
         
         allDaySwitch.on = self.viewModel.allDay.value
         
-//        allDaySwitch.rx_value
-//            .subscribeNext { [weak self] value -> Void in
-//                self?.viewModel.allDay.value = value
-//            }
-//            .addDisposableTo(disposeBag)
+        allDaySwitch.rx_value
+            .subscribeNext { [weak self] value -> Void in
+                self?.viewModel.allDay.value = value
+            }
+            .addDisposableTo(disposeBag)
         
         sv.addSubview(allDaySwitch)
         
@@ -341,7 +282,6 @@ extension RxViewController {
         let singleTapRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("onTapInView:"))
         singleTapRecognizer.numberOfTouchesRequired = 1
         singleTapRecognizer.sectionType = sectionDesc.type
-        singleTapRecognizer.numberOfTouchesRequired = 1
         view.addGestureRecognizer(singleTapRecognizer)
     }
     

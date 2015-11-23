@@ -10,6 +10,14 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+/**
+ Compare two dates, ensure that they differ by at least 60 seconds.
+ 
+ - parameter lhs: date to compare
+ - parameter rhs: another date to compare
+ 
+ - returns: true if the dates are comparable (by at most 1 minute).  false otherwise
+ */
 internal func dateComparer( lhs:NSDate?, rhs:NSDate? ) -> Bool {
     guard let rhs = rhs else {
         return true
@@ -21,6 +29,9 @@ internal func dateComparer( lhs:NSDate?, rhs:NSDate? ) -> Bool {
     return true
 }
 
+/**
+ Compare two timezones.
+ */
 internal func timeZoneComparer( lhs:NSTimeZone, rhs:NSTimeZone ) -> Bool {
     return lhs != rhs
 }
@@ -30,9 +41,6 @@ internal func timeZoneComparer( lhs:NSTimeZone, rhs:NSTimeZone ) -> Bool {
 public class RxViewModel {
     
     // Properties
-    
-    // technically these properties are reactive, but we are listing them here
-    // because they hold our data.
     
     public var startDate:ValueHolder<NSDate?>
     public var endDate:ValueHolder<NSDate?>
@@ -161,15 +169,20 @@ extension RxViewModel {
 }
 
 extension NSTimeZone {
-    
+
+    /**
+     Return the Paperless Post label for the current timezone.  (Same values as PPGeography)
+     
+     - returns: the label, or title to be displayed in the date picker
+     */
     func getLabel() -> String {
         
         var label = ""
         do {
             label = try getTimezoneLabel(self)
         }
-        catch TimeZonePickerErrors.NameInvalid {
-            print("The NSTimeZone stored inside managedTimeZones is not a valid NSTimeZone name.")
+        catch TimeZonePickerErrors.NameInvalid(let message) {
+            print("TimeZone could not be initialized.  Message: \(message).")
         }
         catch TimeZonePickerErrors.NotFound(let message) {
             print("TimeZone not found! here's the message: \(message)")
