@@ -67,7 +67,9 @@ extension RxViewController {
         self.tableView = UITableView(frame: self.view!.frame, style: .Grouped)
         self.view?.addSubview(tableView)
         
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        self.tableView.registerClass(EndDatePickerTableViewCell.self, forCellReuseIdentifier: "EndDatePickerCell")
+        self.tableView.registerClass(StartDatePickerTableViewCell.self, forCellReuseIdentifier: "StartDatePickerCell")
+        self.tableView.registerClass(PickerViewTableViewCell.self, forCellReuseIdentifier: "PickerViewCell")
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.tableFooterView = tableFooterView()
         self.tableView.sectionFooterHeight = 1
@@ -94,9 +96,20 @@ extension RxViewController {
         self.dataSource = RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper(cellFactory: { (tv, s, r, item) -> UITableViewCell in
             // setup a cell via Rx
             let indexPath = NSIndexPath(forItem: r, inSection: s)
-            let cell = tv.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
-            self.setupCell(cell, sectionDesc: item)
-            return cell
+            
+            let identifier:String
+            if item.type.isDateType() {
+                
+                identifier = item.type == .StartDate ? "StartDatePickerCell" : "EndDatePickerCell"
+            } else {
+                identifier = "PickerViewCell"
+            }
+            
+            let cell = tv.dequeueReusableCellWithIdentifier(identifier, forIndexPath: indexPath) as! PickerCellType
+            
+            cell.setup( item, viewModel: self.viewModel, disposeBag: self.disposeBag )
+            
+            return (cell as? UITableViewCell)!
         }) { (i:Int, item:SectionDesc) -> Int in // sectionRowCount closure
             return item.selectionState == .Selected ? 1 : 0
         }

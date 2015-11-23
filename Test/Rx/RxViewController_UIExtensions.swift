@@ -150,8 +150,8 @@ extension RxViewController {
      - parameter sectionDesc: A model that describes how to configure the cell.
      */
     func setupCell(cell:UITableViewCell, sectionDesc:SectionDesc) {
-        setupDatePicker(cell, sectionDesc: sectionDesc)
-        setupTimezonePicker(cell, sectionDesc: sectionDesc)
+//        setupDatePicker(cell, sectionDesc: sectionDesc)
+//        setupTimezonePicker(cell, sectionDesc: sectionDesc)
         animateCellHeightChange(cell, sectionDesc: sectionDesc)
     }
     
@@ -165,11 +165,7 @@ extension RxViewController {
      */
     func animateCellHeightChange(cell: UITableViewCell, sectionDesc : SectionDesc) {
         
-        guard false else {
-            // Animation should only occur when selection is changing
-            return
-        }
-        
+        /*
         cell.contentView.snp_remakeConstraints { (make) -> Void in
             make.width.equalTo(cell.contentView.superview!.snp_width)
             self.rowHeightClosedConstraint = make.height
@@ -196,6 +192,7 @@ extension RxViewController {
             
             self.tableView.endUpdates()
         }
+        */
     }
 }
 
@@ -342,12 +339,15 @@ extension RxViewController {
             return nil
         }
         
+        // Two way binding is disabled for now...
         let allDaySwitch = UISwitch()
+        allDaySwitch.on = self.viewModel.allDay.value
         
-        // Two way binding allows bidirectional changes: 
-        // - a change on the view model triggers a change on the UI element
-        // - a change on the UIElement triggers a change on the view model.
-        allDaySwitch.rx_value <-> self.viewModel.allDay
+//        allDaySwitch.rx_value
+//            .subscribeNext { [weak self] value -> Void in
+//                self?.viewModel.allDay.value = value
+//            }
+//            .addDisposableTo(disposeBag)
         
         sv.addSubview(allDaySwitch)
         
@@ -356,7 +356,7 @@ extension RxViewController {
 }
 
 // MARK: Picker (Date and TimeZone) Configuration
-
+/*
 extension RxViewController {
     
     /**
@@ -375,13 +375,23 @@ extension RxViewController {
         cell.removePickers()
         cell.contentView.addSubview(cell.datePicker)
         
-        // Two way binding allows bidirectional changes:
-        // - a change on the view model triggers a change on the UI element
-        // - a change on the UIElement triggers a change on the view model.
+        // Two way binding is disabled for now.
         if  sectionDesc.type == .StartDate {
-            cell.datePicker.rx_date <-> self.viewModel.startDate
+
+            //cell.datePicker.date = self.viewModel.startDate.value!
+            cell.datePicker.rx_date
+                .subscribeNext { [weak self] value in
+                    self?.viewModel.startDate.value = value
+                }
+                .addDisposableTo(disposeBag)
         } else {
-            cell.datePicker.rx_date <-> self.viewModel.endDate
+            
+            //cell.datePicker.date = self.viewModel.endDate.value!
+            cell.datePicker.rx_date
+                .subscribeNext { [weak self] value in
+                    self?.viewModel.startDate.value = value
+                }
+                .addDisposableTo(disposeBag)
         }
         
         cell.datePicker.snp_remakeConstraints(closure: { (make) -> Void in
@@ -415,6 +425,7 @@ extension RxViewController {
         }
     }
 }
+*/
 
 // MARK: Interactivity
 
@@ -449,7 +460,7 @@ extension RxViewController {
         
         if sender.state == .Ended {
             
-            self.viewModel.selectedRowType.currentSelection = sender.sectionType
+            self.viewModel.selectedRowType.value = sender.sectionType
         }
     }
     
@@ -475,7 +486,7 @@ extension UIGestureRecognizer {
 }
 
 // MARK: UITableViewCell Additions
-
+/*
 extension UITableViewCell  {
     
     private struct AssociatedKeys {
@@ -525,6 +536,7 @@ extension UITableViewCell  {
         objc_setAssociatedObject(self, &AssociatedKeys.TimeZonePicker, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }
+*/
 
 // MARK: - UIPickerViewDataSource, UIPickerViewDelegate implementations inside UITableViewCell.
 

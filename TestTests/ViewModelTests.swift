@@ -12,11 +12,11 @@ import RxSwift
 import RxCocoa
 import RxBlocking
 
-import Test
+@testable import Test
 
 // MARK: Selection Tests
 
-class ViewModelTests: XCTestCase {
+class ViewModelSelectionTests: XCTestCase {
     
     func testStartDateComesPreselectedWhenNotPassingArguments() {
 
@@ -64,7 +64,7 @@ class ViewModelTests: XCTestCase {
                 print("EXIT subscribeNext")
         }
         
-        viewModel.selectedRowType.currentSelection = .EndDate
+        viewModel.selectedRowType.value = .EndDate
         
         defer {
             d.dispose()
@@ -92,7 +92,7 @@ class ViewModelTests: XCTestCase {
                 latestValueFromRow = rows
         }
         
-        viewModel.selectedRowType.currentSelection = .TimeZone
+        viewModel.selectedRowType.value = .TimeZone
         
         defer {
             d.dispose()
@@ -119,7 +119,7 @@ class ViewModelTests: XCTestCase {
                 latestValueFromRow = rows
         }
         
-        viewModel.selectedRowType.currentSelection = .AllDay
+        viewModel.selectedRowType.value = .AllDay
         
         defer {
             d.dispose()
@@ -140,10 +140,10 @@ class ViewModelTests: XCTestCase {
                 latestValueFromRow = rows
         }
         
-        viewModel.selectedRowType.currentSelection = .StartDate
-        viewModel.selectedRowType.currentSelection = .EndDate
-        viewModel.selectedRowType.currentSelection = .TimeZone
-        viewModel.selectedRowType.currentSelection = .AllDay
+        viewModel.selectedRowType.value = .StartDate
+        viewModel.selectedRowType.value = .EndDate
+        viewModel.selectedRowType.value = .TimeZone
+        viewModel.selectedRowType.value = .AllDay
         
         defer {
             d.dispose()
@@ -161,34 +161,66 @@ class ViewModelTests: XCTestCase {
 
 // MARK: Value modification tests
 
-extension ViewModelTests {
+class ViewModelValueStorageTests: XCTestCase {
+    
+    func testDatePreconditionPreventsDatesWithinOneMinute() {
+        
+        let result_1 = dateComparer(NSDate(), rhs: NSDate())
+        
+        XCTAssertFalse(result_1, "dates should have more than 1 minute between each")
+        
+        let firstDate = NSDate()
+        let thirtySecondsLater = NSDate(timeInterval: 30, sinceDate: firstDate)
+        let result_2 = dateComparer(firstDate, rhs: thirtySecondsLater)
+        
+        XCTAssertFalse(result_2, "dates should have more than 1 minute between each")
+        
+        let secondDate = NSDate()
+        let thirtySecondsLater_Variant = NSDate(timeIntervalSinceNow: 30)
+        let result_3 = dateComparer(secondDate, rhs: thirtySecondsLater_Variant)
+        
+        XCTAssertFalse(result_3, "dates should have more than 1 minute between each")
+        
+        let thirdDate = NSDate()
+        let sixtySecondsLater = NSDate(timeInterval: 60, sinceDate: thirdDate)
+        let result_4 = dateComparer(thirdDate, rhs: sixtySecondsLater)
+        
+        XCTAssertFalse(result_4, "dates should have more than 1 minute between each")
+    }
+    
+    func testDatePreconditionAllowsDatesWithMoreThanOneMinute() {
+
+        let firstDate = NSDate()
+        let sixtyOneSecondsLater = NSDate(timeInterval: 61, sinceDate: firstDate)
+        let result = dateComparer(firstDate, rhs: sixtyOneSecondsLater)
+        
+        XCTAssertTrue(result, "dates should have more than 1 minute between each")
+    }
 
     func testInitialDateValueIsStored() {
         
         let viewModel = RxViewModel()
         
         var latestValueFromRow: [SectionDesc]? = nil
-        
         let d = viewModel.rows
             .asObservable()
             .subscribeNext { (rows) -> Void in
                 latestValueFromRow = rows
         }
-        
         defer {
             d.dispose()
         }
         
-        let date = NSDate(timeIntervalSinceNow: 1000000)
+        let newDate = NSDate(timeIntervalSinceNow: 120)  // two minutes later should work
         
-        viewModel.selectedRowType.currentSelection = .StartDate
-        viewModel.startDate.value = date
+        viewModel.selectedRowType.value = .StartDate
+        viewModel.startDate.value = newDate
         
         let currentSectionDesc = latestValueFromRow![SectionType.StartDate.toInt()]
         XCTAssertEqual(currentSectionDesc.type, SectionType.StartDate )
         XCTAssertEqual(currentSectionDesc.state, SectionState.Present )
         XCTAssertEqual(currentSectionDesc.selectionState, SectionSelection.Selected )
-        XCTAssertEqual(viewModel.startDate.value, date)
+        XCTAssertEqual(viewModel.startDate.value, newDate)
     }
 
     
@@ -210,7 +242,7 @@ extension ViewModelTests {
         
         let date = NSDate(timeIntervalSinceNow: 1000000)
         
-        viewModel.selectedRowType.currentSelection = .EndDate
+        viewModel.selectedRowType.value = .EndDate
         viewModel.endDate.value = date
         
         let endDate = latestValueFromRow![SectionType.EndDate.toInt()]
@@ -265,7 +297,7 @@ extension ViewModelTests {
         
         // Set the start Date
         
-        viewModel.selectedRowType.currentSelection = .StartDate
+        viewModel.selectedRowType.value = .StartDate
         viewModel.startDate.value = startDate
         
         // Check values when setting start date
@@ -279,13 +311,13 @@ extension ViewModelTests {
         XCTAssertEqual(endDateSectionData.type, SectionType.EndDate )
         XCTAssertEqual(endDateSectionData.state, SectionState.Missing )
         XCTAssertEqual(endDateSectionData.selectionState, SectionSelection.NotSelected )
-
-        XCTAssertEqual(viewModel.startDate.value, startDate)
+        
+        XCTAssertNotNil(viewModel.startDate.value)
         XCTAssertNil(viewModel.endDate.value)
         
         // Set the end Date
 
-        viewModel.selectedRowType.currentSelection = .EndDate
+        viewModel.selectedRowType.value = .EndDate
         viewModel.endDate.value = endDate
 
         // Check values after setting end date
@@ -300,8 +332,8 @@ extension ViewModelTests {
         XCTAssertEqual(finalEndDateSectionData.state, SectionState.Present )
         XCTAssertEqual(finalEndDateSectionData.selectionState, SectionSelection.Selected )
         
-        XCTAssertEqual(viewModel.startDate.value, startDate)
-        XCTAssertEqual(viewModel.endDate.value, endDate)
+        XCTAssertNotNil(viewModel.startDate.value)
+        XCTAssertNotNil(viewModel.endDate.value)
     }
     
     func testTimeZoneValueCanBeChanged() {
@@ -326,7 +358,7 @@ extension ViewModelTests {
         XCTAssertNotNil(expectedTimezone, "TimeZone should had been initialized from its knownTimeZoneName")
         XCTAssertEqual(expectedTimezone?.name, randTimezoneName, "TimeZone names should match")
         
-        viewModel.selectedRowType.currentSelection = .TimeZone
+        viewModel.selectedRowType.value = .TimeZone
         viewModel.timeZone.value = expectedTimezone!
         
         // Check the data coming out from the Rx pipe
@@ -343,6 +375,17 @@ extension ViewModelTests {
             // Put the code you want to measure the time of here.
         }
     }
+}
+
+class ViewModelReactiveTests : XCTestCase {
+    
+    
+    func testDataShouldNotChangeAllTheTime() {
+        
+        
+        
+    }
+    
 }
 
 // MARK: - Equatable functions

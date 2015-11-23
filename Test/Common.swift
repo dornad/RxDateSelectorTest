@@ -8,6 +8,96 @@
 
 import UIKit
 
+import RxSwift
+
+extension String {
+    var lastPathComponent: String {
+        get {
+            return (self as NSString).lastPathComponent
+        }
+    }
+}
+
+public func ENTER_LOG(@autoclosure message:  () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {
+    
+    print("\(filename.lastPathComponent) - \(function) - @% ENTER", message())
+}
+
+public func EXIT_LOG(@autoclosure message:  () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {
+    
+    print("\(filename.lastPathComponent) - \(function) - @% EXIT", message())
+}
+
+// MARK: ValueHolder
+
+/** A struct that allows types to be stored in Rx Observables, while providing their non-rx value, plus other benefits.
+
+* Storage of (optional) previous value (for rollback purposes).
+* Exposure of RxSwift Observable.
+* (Optional) Value setter precondition
+
+Usage Example:
+
+```
+let value = "Hello World"
+
+let holder: ValueHolder<String> = RxValueHolder(value)
+
+myValueHolder.rxVariable
+    .asObservable()
+    .subscribeNext { value -> Void in
+
+        print("value = \(value)")
+    }
+
+myValueHolder.value = "Foo Bar"
+```
+*/
+public struct ValueHolder<T> {
+    
+    public typealias CallbackType = (_:T,_:T) -> Bool
+    
+    /// The previous value used by the holder
+    private var previousValue:T?
+    
+    private var myCallback: CallbackType? = nil
+    
+    public var rxVariable:Variable<T>
+    
+    public var value: T {
+        get {
+            return self.rxVariable.value
+        }
+        set(newValue) {
+
+            if let cb = self.myCallback {
+
+                if cb(self.rxVariable.value, newValue) == false {
+                    return
+                }
+            }
+            
+            self.previousValue = self.value
+            rxVariable.value = newValue
+        }
+    }
+    
+    /**
+     Initializes the ValueHolder with its initial value.
+     
+     - parameter initialValue: The initial instance to be stored.
+     - parameter callback:     A closure that should return **false** if you want to prevent a value being stored.
+     The signature of the closure must match the following: `T,T -> Bool`
+     
+     - returns: A ValueHolder instance with a value stored.
+     */
+    public init(_ initialValue:T, callbackForValueSetting callback: CallbackType? = nil) {
+        
+        self.myCallback = callback
+        self.rxVariable = Variable(initialValue)
+    }
+}
+
 // MARK: Custom Fonts
 
 extension UIFont {

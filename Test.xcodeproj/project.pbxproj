@@ -13,6 +13,7 @@
 		5C2CA43B1BF234560081235C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C2CA43A1BF234560081235C /* Assets.xcassets */; };
 		5C2CA43E1BF234560081235C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C2CA43C1BF234560081235C /* LaunchScreen.storyboard */; };
 		5C5119351BF647A8001F708D /* SectionedTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */; };
+		5C9DFB991BFFB3860078CA3A /* ValueHolderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9DFB981BFFB3860078CA3A /* ValueHolderTests.swift */; };
 		5CA77A5C1BF5494D0035F065 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA77A5B1BF5494D0035F065 /* Common.swift */; };
 		5CA77A611BF54F020035F065 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		5CA77A621BF54F020035F065 /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -20,6 +21,7 @@
 		5CB8661F1BFA8790002962AE /* ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB8661E1BFA8790002962AE /* ViewModelTests.swift */; };
 		5CE283431BF4F2FD00A0DB22 /* RxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */; };
 		5CE283491BF500AC00A0DB22 /* RxViewController_UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */; };
+		5CEDC1661BFFD8B9003D80E5 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */; };
 		A831A637043A9DE8CB0DBBC1 /* Pods_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696F85F7492A47662363057B /* Pods_Test.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +45,7 @@
 		5C2CA43D1BF234560081235C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5C2CA43F1BF234560081235C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SectionedTableViewDataSource.swift; path = RxAdditions/SectionedTableViewDataSource.swift; sourceTree = "<group>"; };
+		5C9DFB981BFFB3860078CA3A /* ValueHolderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueHolderTests.swift; sourceTree = "<group>"; };
 		5CA77A5B1BF5494D0035F065 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		5CB8661C1BFA8790002962AE /* TestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CB8661E1BFA8790002962AE /* ViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelTests.swift; sourceTree = "<group>"; };
@@ -50,6 +53,7 @@
 		5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = Rx/RxViewModel.swift; sourceTree = "<group>"; };
 		5CE283471BF4FC6800A0DB22 /* RxSwift.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RxSwift.playground; sourceTree = "<group>"; };
 		5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewController_UIExtensions.swift; path = Rx/RxViewController_UIExtensions.swift; sourceTree = "<group>"; };
+		5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DatePickerTableViewCell.swift; path = Rx/DatePickerTableViewCell.swift; sourceTree = "<group>"; };
 		696F85F7492A47662363057B /* Pods_Test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F83AFB3347733B5212CB8C /* Pods-Test.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Test/Pods-Test.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -124,6 +128,7 @@
 				5C2CA4351BF234560081235C /* RxViewController.swift */,
 				5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */,
 				5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */,
+				5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */,
 			);
 			name = Rx;
 			sourceTree = "<group>";
@@ -140,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				5CB8661E1BFA8790002962AE /* ViewModelTests.swift */,
+				5C9DFB981BFFB3860078CA3A /* ValueHolderTests.swift */,
 				5CB866201BFA8790002962AE /* Info.plist */,
 			);
 			path = TestTests;
@@ -330,6 +336,7 @@
 				5CA77A611BF54F020035F065 /* (null) in Sources */,
 				5CA77A5C1BF5494D0035F065 /* Common.swift in Sources */,
 				5CA77A621BF54F020035F065 /* (null) in Sources */,
+				5CEDC1661BFFD8B9003D80E5 /* DatePickerTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CB8661F1BFA8790002962AE /* ViewModelTests.swift in Sources */,
+				5C9DFB991BFFB3860078CA3A /* ValueHolderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

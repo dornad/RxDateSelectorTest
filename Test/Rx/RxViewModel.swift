@@ -10,50 +10,19 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-// MARK: SelectedRowType Struct
-
-/** A struct that isolates logic around selection, including Rx behavior.
-
-Usage :
-
-```
-let selectedRow = SelectedRowType()
-
-let reactiveData = selectedRow._currentSelection
-    .asObservable()
-    .subscribeNext { (selectedRowType:SectionType) -> Void in
-        // do something with the data
+internal func dateComparer( lhs:NSDate?, rhs:NSDate? ) -> Bool {
+    guard let rhs = rhs else {
+        return true
     }
 
-selectedRow.currentSelection = SectionType.StartDate
-```
-*/
-public struct SelectedRowType {
-    
-    private var _previousSelection:SectionType?
-    private var _currentSelection:Variable<SectionType?>
-    
-    public var currentSelection: SectionType? {
-        get {
-            return _currentSelection.value
-        }
-        set(newValue) {
-            
-            guard newValue != SectionType.AllDay else {
-                return
-            }
-            
-            if let existingSelection = _currentSelection.value {
-                _previousSelection = existingSelection
-            }
-            
-            _currentSelection.value = newValue
-        }
+    if let lhs = lhs {
+        return abs( lhs.timeIntervalSinceDate(rhs) ) > 60
     }
-    
-    init() {
-        self._currentSelection = Variable(nil)
-    }
+    return true
+}
+
+internal func timeZoneComparer( lhs:NSTimeZone, rhs:NSTimeZone ) -> Bool {
+    return lhs != rhs
 }
 
 // MARK: ViewModel - Properties, transformers and initializers
@@ -65,12 +34,12 @@ public class RxViewModel {
     // technically these properties are reactive, but we are listing them here
     // because they hold our data.
     
-    public var startDate:Variable<NSDate?>
-    public var endDate:Variable<NSDate?>
-    public var timeZone:Variable<NSTimeZone>
+    public var startDate:ValueHolder<NSDate?>
+    public var endDate:ValueHolder<NSDate?>
+    public var timeZone:ValueHolder<NSTimeZone>
     public var allDay:Variable<Bool>
     
-    public var selectedRowType:SelectedRowType
+    public var selectedRowType:ValueHolder<SectionType?>
     
     // Helpers and Transformers
     
@@ -82,15 +51,16 @@ public class RxViewModel {
         
         self.dateFormatter.dateFormat = "EEE, MMM d, yyyy h:mm a"
         
-        self.startDate = Variable(startDate)
-        self.endDate = Variable(endDate)
-        self.timeZone = Variable(timeZone)
-        self.allDay = Variable(allDay)
-        self.selectedRowType = SelectedRowType()
+        self.startDate          = ValueHolder(startDate,        callbackForValueSetting: dateComparer)
+        self.endDate            = ValueHolder(endDate,          callbackForValueSetting: dateComparer)
+        self.timeZone           = ValueHolder(timeZone,         callbackForValueSetting: timeZoneComparer)
+        self.allDay             = Variable(allDay)
         
-        if startDate == nil && endDate == nil {
+        // Handle Preselection.
+        let preselection:SectionType? = startDate == nil && endDate == nil ? .StartDate : nil
+        self.selectedRowType = ValueHolder(preselection, callbackForValueSetting: { return $1 != .AllDay })
+        if preselection != nil {
             self.startDate.value = NSDate()
-            self.selectedRowType.currentSelection = .StartDate
         }
     }
 }
@@ -99,25 +69,6 @@ public class RxViewModel {
 
 extension RxViewModel {
     
-    // distinctUntilChanged : ensure that we events are only generated when the changes between dates are more than 1 minute.    
-    
-    private func dateComparer( lhs:NSDate?, rhs:NSDate? ) -> Bool {
-        
-        guard let rhs = rhs else {
-            return false
-        }
-        if let lhs = lhs {
-            
-            return abs( lhs.timeIntervalSinceDate(rhs) ) <= 60
-        }
-        return true
-    }
-    
-    private func timeZoneComparer( lhs:NSTimeZone, rhs:NSTimeZone ) -> Bool {
-        
-        return lhs != rhs
-    }
-
     /**
     The reactive source of data.
     
@@ -127,23 +78,10 @@ extension RxViewModel {
     */
     public var rows:Driver<[SectionDesc]> {
 
-        // For each model (NSDate?, NSDate?, NSTimeZone, Bool) transform the Variable<model> into its corresponding SectionState.
-        
-        return combineLatest(self.startDate, self.endDate, self.timeZone, self.allDay, self.selectedRowType._currentSelection) { (sDate, eDate, _, _, _) -> [SectionDesc] in
-            
-            let startDateState:SectionState = (sDate != nil) ? .Present : .Missing
-            let endDateState:SectionState = (eDate != nil) ? .Present : .Missing
-            
-                return [
-                    (.StartDate, startDateState, .NotSelected),
-                    (.EndDate,   endDateState,   .NotSelected),
-                    (.TimeZone,  .Present,       .NotSelected),
-                    (.AllDay,    .Present,       .NotSelected)
-                ]
-            }
+        return self.combineSources()
             .map { (rows) -> [SectionDesc] in
                 
-                if let selected:SectionType = self.selectedRowType.currentSelection {
+                if let selected:SectionType = self.selectedRowType.value {
                     
                     var mutableRows = rows
                     let index = selected.toInt()
@@ -153,6 +91,35 @@ extension RxViewModel {
                 return rows
             }
             .asDriver(onErrorJustReturn: [])
+    }
+    
+    /**
+     Combine our sources into a single observable.
+     
+     - returns: A observable of type SectionDesc
+     */
+    func combineSources()-> Observable<[SectionDesc]> {
+        
+        // For each model (NSDate?, NSDate?, NSTimeZone, Bool) transform its model into its corresponding SectionState.
+        
+        let data = combineLatest(
+            self.startDate.rxVariable,
+            self.endDate.rxVariable,
+            self.timeZone.rxVariable,
+            self.allDay,
+            self.selectedRowType.rxVariable) { (v1, v2, v3, v4, v5) -> [SectionDesc] in
+                
+                let sDateState:SectionState = (v1 != nil) ? .Present : .Missing
+                let eDateState:SectionState = (v2 != nil) ? .Present : .Missing
+                
+                return [
+                    (.StartDate, sDateState, .NotSelected),
+                    (.EndDate,   eDateState,   .NotSelected),
+                    (.TimeZone,  .Present,       .NotSelected),
+                    (.AllDay,    .Present,       .NotSelected)
+                ]
+        }
+        return data
     }
     
     /**
@@ -169,27 +136,24 @@ extension RxViewModel {
         if type.isDateType() {
             
             // dates will use the dataFormatter property.
-            
-            return (type == .StartDate ? self.startDate : self.endDate)
-                .map({ date -> String in
-                    
-                    guard let date = date else {
-                        return ""
-                    }
-                    return self.dateFormatter.stringFromDate(date)
-                })
+            let source = (type == .StartDate ? self.startDate.rxVariable : self.endDate.rxVariable)
+
+            return source.map({ date -> String in
+                guard let date = date else {
+                    return ""
+                }
+                return self.dateFormatter.stringFromDate(date)
+            })
         }
             
         else if type == .TimeZone {
             
-            // Timezones simply use their name property.
-            return self.timeZone
+            return self.timeZone.rxVariable
                 .map { return $0.name }
                 .asObservable()
         }
         
-        // everything else just returns an empty string.
-            
+
         else {
             return Variable( "" ).asObservable()
         }
