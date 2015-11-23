@@ -218,8 +218,6 @@ extension RxViewController {
         headerLabel.text = sectionDesc.type.toTitleString()
         sv.addSubview(headerLabel)
         
-        // TODO: Add a circular "x" button when the label is part of a "selected" section.
-        
         headerLabel.snp_makeConstraints{ (make) -> Void in
             make.left.equalTo(sv).offset(10)
             make.centerY.equalTo(sv)
@@ -242,7 +240,9 @@ extension RxViewController {
         
         if let accessory = accessory {
             accessory.snp_makeConstraints{ (make) -> Void in
-                make.right.equalTo(accessory.superview!).offset(-20)
+                make.right.equalTo(accessory.superview!)
+                    .offset(-20)
+                    .priorityLow()
                 make.centerY.equalTo(accessory.superview!)
             }
         }
@@ -264,6 +264,25 @@ extension RxViewController {
         label.textColor = UIColor(red: 0.557, green: 0.557, blue: 0.576, alpha: 1)
         label.font = UIFont.helveticaNeueLightFontWithSize(16)
         sv.addSubview(label)
+        
+        if sectionDesc.type == .EndDate && sectionDesc.selectionState == .Selected {
+            
+            let button = UIButton(type: UIButtonType.Custom)
+            button.setImage(UIImage.init(named: "closeBtn"), forState: UIControlState.Normal)
+            sv.addSubview(button)
+            
+            button.rx_tap
+                .subscribeNext { [weak self] () -> Void in
+                    self?.viewModel.selectedRowType.value = .StartDate
+                }
+                .addDisposableTo(disposeBag)
+            
+            button.snp_makeConstraints { (make) -> Void in
+                make.left.equalTo(label.snp_right).offset(5)
+                make.right.equalTo(sv).offset(-10)
+                make.centerY.equalTo(sv)
+            }
+        }
         
         // Bind the label's text to the ViewModel's respective data.
         self.viewModel.getStringObservableForRowType(sectionDesc.type)
@@ -371,83 +390,5 @@ extension UIGestureRecognizer {
         set {
             objc_setAssociatedObject(self, &AssociatedKeys.SectionType, newValue.toInt(), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
-    }
-}
-
-// MARK: UITableViewCell Additions
-/*
-extension UITableViewCell  {
-    
-    private struct AssociatedKeys {
-        static var DatePicker = "pp_DatePicker"
-        static var TimeZonePicker = "pp_TimeZonePicker"
-    }
-
-    /// Use Associated Objects to add a date picker property to the UITableViewCell
-    var datePicker:UIDatePicker {
-        get {
-            var picker = objc_getAssociatedObject(self, &AssociatedKeys.DatePicker) as? UIDatePicker
-            if picker == nil {
-                picker = UIDatePicker()
-                self.datePicker = picker!
-            }
-            return picker!
-        }
-        set {
-            objc_setAssociatedObject(self, &AssociatedKeys.DatePicker, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    /// Use Associated Objects to add a time zone picker property to the UITableViewCell
-    var timeZonePicker:UIPickerView {
-        get {
-            var picker = objc_getAssociatedObject(self, &AssociatedKeys.TimeZonePicker) as? UIPickerView
-            if picker == nil {
-                picker = UIPickerView()
-                self.timeZonePicker = picker!
-            }
-            return picker!
-        }
-        set {
-            objc_setAssociatedObject(self, &AssociatedKeys.TimeZonePicker, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    /**
-     Calls removeFromSuperview() on the two pickers (datePicker, timeZonePicker) and remove the associated values
-     */
-    func removePickers() {
-        
-        self.datePicker.removeFromSuperview()
-        self.timeZonePicker.removeFromSuperview()
-        
-        objc_setAssociatedObject(self, &AssociatedKeys.DatePicker, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        objc_setAssociatedObject(self, &AssociatedKeys.TimeZonePicker, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-    }
-}
-*/
-
-// MARK: - UIPickerViewDataSource, UIPickerViewDelegate implementations inside UITableViewCell.
-
-// (this will probably be removed once we implement a Rx datasource)
-
-extension RxViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    
-    public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    public func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return NSTimeZone.knownTimeZoneNames().count
-    }
-    
-    public func pickerView(pickerView: UIPickerView,titleForRow row: Int,forComponent component: Int) -> String? {
-        // might be worth looking into: http://stackoverflow.com/questions/31338724/how-to-get-full-time-zone-name-ios
-        return NSTimeZone.knownTimeZoneNames()[row]
-    }
-    
-    public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let selectedName = NSTimeZone.knownTimeZoneNames()[row]
-        self.viewModel.timeZone.value = NSTimeZone(name: selectedName)!
     }
 }
