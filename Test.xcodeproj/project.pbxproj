@@ -101,9 +101,11 @@
 		5C2CA4321BF234560081235C /* Test */ = {
 			isa = PBXGroup;
 			children = (
-				5CF281861BFCC91800982D0E /* Fonts */,
-				5CA77A5A1BF548A10035F065 /* Rx */,
+				5CC848D61C03824B00BD9407 /* ViewControllers */,
+				5CC848D51C03824300BD9407 /* ViewModels */,
+				5CA77A5A1BF548A10035F065 /* Views */,
 				5CA77A5D1BF54E6E0035F065 /* RxAdditions */,
+				5CF281861BFCC91800982D0E /* Fonts */,
 				5CA77A5B1BF5494D0035F065 /* Common.swift */,
 				5C2CA4331BF234560081235C /* AppDelegate.swift */,
 				5C2CA4371BF234560081235C /* Main.storyboard */,
@@ -122,15 +124,12 @@
 			name = Playgrounds;
 			sourceTree = "<group>";
 		};
-		5CA77A5A1BF548A10035F065 /* Rx */ = {
+		5CA77A5A1BF548A10035F065 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5C2CA4351BF234560081235C /* RxViewController.swift */,
-				5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */,
-				5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */,
 				5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */,
 			);
-			name = Rx;
+			name = Views;
 			sourceTree = "<group>";
 		};
 		5CA77A5D1BF54E6E0035F065 /* RxAdditions */ = {
@@ -149,6 +148,23 @@
 				5CB866201BFA8790002962AE /* Info.plist */,
 			);
 			path = TestTests;
+			sourceTree = "<group>";
+		};
+		5CC848D51C03824300BD9407 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */,
+			);
+			name = ViewModels;
+			sourceTree = "<group>";
+		};
+		5CC848D61C03824B00BD9407 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				5C2CA4351BF234560081235C /* RxViewController.swift */,
+				5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */,
+			);
+			name = ViewControllers;
 			sourceTree = "<group>";
 		};
 		5CF281861BFCC91800982D0E /* Fonts */ = {

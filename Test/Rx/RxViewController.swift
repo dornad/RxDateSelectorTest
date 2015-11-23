@@ -28,12 +28,6 @@ public class RxViewController : UIViewController {
     /// Our ViewModel, initialized with its default values
     var viewModel:RxViewModel = RxViewModel()
     
-    /// A Constraint for the table cell height when they are closed (~10 px)
-    var rowHeightClosedConstraint: Constraint? = nil
-    
-    /// A Constraint for the table cell height when they are open ( equal to cell.contentView.superview.height)
-    var rowHeightOpenConstraint: Constraint? = nil
-    
     /**
      Initializer for Playground testing.
      
@@ -70,7 +64,8 @@ extension RxViewController {
         self.tableView.registerClass(EndDatePickerTableViewCell.self, forCellReuseIdentifier: "EndDatePickerCell")
         self.tableView.registerClass(StartDatePickerTableViewCell.self, forCellReuseIdentifier: "StartDatePickerCell")
         self.tableView.registerClass(PickerViewTableViewCell.self, forCellReuseIdentifier: "PickerViewCell")
-        self.tableView.tableHeaderView = tableHeaderView()
+        self.tableView.backgroundColor = UIColor.whiteColor()
+	self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.tableFooterView = tableFooterView()
         self.tableView.sectionFooterHeight = 1
 

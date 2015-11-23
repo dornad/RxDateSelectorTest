@@ -182,9 +182,6 @@ extension RxViewController {
             
             self.tableView.beginUpdates()
             
-            self.rowHeightOpenConstraint?.activate()
-            self.rowHeightClosedConstraint?.deactivate()
-            
             cell.contentView.setNeedsLayout()
             UIView.animateWithDuration(0.9) { () -> Void in
                 cell.contentView.layoutIfNeeded()
@@ -460,7 +457,23 @@ extension RxViewController {
         
         if sender.state == .Ended {
             
+            let previousSelection = self.viewModel.selectedRowType.value?.toInt()
+            let current = sender.sectionType.toInt()
+            
+            
             self.viewModel.selectedRowType.value = sender.sectionType
+            
+            tableView.beginUpdates()
+            
+            let indexSet:NSMutableIndexSet = NSMutableIndexSet(index: current)
+            if let previousSelection = previousSelection {
+                indexSet.addIndex(previousSelection)
+            }
+            
+            tableView.reloadSections(indexSet, withRowAnimation: UITableViewRowAnimation.None)
+            
+            tableView.endUpdates()
+            
         }
     }
     
