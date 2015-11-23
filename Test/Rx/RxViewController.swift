@@ -65,7 +65,7 @@ extension RxViewController {
         self.tableView.registerClass(StartDatePickerTableViewCell.self, forCellReuseIdentifier: "StartDatePickerCell")
         self.tableView.registerClass(PickerViewTableViewCell.self, forCellReuseIdentifier: "PickerViewCell")
         self.tableView.backgroundColor = UIColor.whiteColor()
-	self.tableView.tableHeaderView = tableHeaderView()
+        self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.tableFooterView = tableFooterView()
         self.tableView.sectionFooterHeight = 1
 

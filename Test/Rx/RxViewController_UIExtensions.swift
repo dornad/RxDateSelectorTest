@@ -140,57 +140,6 @@ extension RxViewController {
         
         return header
     }
-    
-    /**
-     Perform setup of a UITableViewCell that was (recently) dequed for a specific NSIndexPath
-     
-     More specifically, this method will create the picker(s), according to data inside the 'sectionDesc' param
-     
-     - parameter cell:    the cell we are setting up.
-     - parameter sectionDesc: A model that describes how to configure the cell.
-     */
-    func setupCell(cell:UITableViewCell, sectionDesc:SectionDesc) {
-//        setupDatePicker(cell, sectionDesc: sectionDesc)
-//        setupTimezonePicker(cell, sectionDesc: sectionDesc)
-        animateCellHeightChange(cell, sectionDesc: sectionDesc)
-    }
-    
-    /**
-     Performs a "expading" animation on the table cell.
-     
-     The animation is performed by adding/removing two different height constraints, and asking the 
-     cell contentView property to layout itself.
-     
-     - parameter cell:        the cell we are animating
-     */
-    func animateCellHeightChange(cell: UITableViewCell, sectionDesc : SectionDesc) {
-        
-        /*
-        cell.contentView.snp_remakeConstraints { (make) -> Void in
-            make.width.equalTo(cell.contentView.superview!.snp_width)
-            self.rowHeightClosedConstraint = make.height
-                .equalTo(UIConstants.rowHeightClosed)
-                .constraint
-            self.rowHeightOpenConstraint = make.height
-                .equalTo(UIConstants.rowHeightExpanded)
-                .priorityLow()
-                .constraint
-        }
-        
-        // Animations must occur in the main queue.
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            
-            self.tableView.beginUpdates()
-            
-            cell.contentView.setNeedsLayout()
-            UIView.animateWithDuration(0.9) { () -> Void in
-                cell.contentView.layoutIfNeeded()
-            }
-            
-            self.tableView.endUpdates()
-        }
-        */
-    }
 }
 
 // MARK: UIControl build functions (reusable)
@@ -338,6 +287,7 @@ extension RxViewController {
         
         // Two way binding is disabled for now...
         let allDaySwitch = UISwitch()
+        
         allDaySwitch.on = self.viewModel.allDay.value
         
 //        allDaySwitch.rx_value
@@ -351,78 +301,6 @@ extension RxViewController {
         return allDaySwitch
     }
 }
-
-// MARK: Picker (Date and TimeZone) Configuration
-/*
-extension RxViewController {
-    
-    /**
-     Perform the configuration of the table row cell as a date picker.
-     
-     - parameter cell:    The UITableViewCell instance that will be configured
-     - parameter sectionDesc: A model that describes how should the cell be configured
-     */
-    func setupDatePicker(cell: UITableViewCell, sectionDesc:SectionDesc) {
-        
-        guard sectionDesc.type.isDateType() else {
-            // Exit when the row type is not a Date Type
-            return
-        }
-        
-        cell.removePickers()
-        cell.contentView.addSubview(cell.datePicker)
-        
-        // Two way binding is disabled for now.
-        if  sectionDesc.type == .StartDate {
-
-            //cell.datePicker.date = self.viewModel.startDate.value!
-            cell.datePicker.rx_date
-                .subscribeNext { [weak self] value in
-                    self?.viewModel.startDate.value = value
-                }
-                .addDisposableTo(disposeBag)
-        } else {
-            
-            //cell.datePicker.date = self.viewModel.endDate.value!
-            cell.datePicker.rx_date
-                .subscribeNext { [weak self] value in
-                    self?.viewModel.startDate.value = value
-                }
-                .addDisposableTo(disposeBag)
-        }
-        
-        cell.datePicker.snp_remakeConstraints(closure: { (make) -> Void in
-            make.width.equalTo(cell.contentView.superview!.snp_width)
-            make.height.equalTo(cell.contentView.snp_height)
-        })
-    }
-    
-    /**
-     Perform the configuration of the table row cell as a picker for the timezone
-     
-     - parameter cell:    The UITableViewCell instance that will be configured
-     - parameter sectionDesc: A model that describes how should the cell be configured
-     */
-    func setupTimezonePicker(cell: UITableViewCell, sectionDesc:SectionDesc) {
-        
-        guard sectionDesc.type == .TimeZone else {
-            return
-        }
-        
-        cell.removePickers()
-        cell.contentView.addSubview(cell.timeZonePicker)
-        cell.timeZonePicker.delegate = self
-        cell.timeZonePicker.dataSource = self
-        
-        cell.timeZonePicker.snp_makeConstraints { (make) -> Void in
-            make.left
-                .right
-                .top
-                .bottom.equalTo(cell.contentView)
-        }
-    }
-}
-*/
 
 // MARK: Interactivity
 
@@ -457,19 +335,17 @@ extension RxViewController {
         
         if sender.state == .Ended {
             
+            tableView.beginUpdates()
+            
             let previousSelection = self.viewModel.selectedRowType.value?.toInt()
             let current = sender.sectionType.toInt()
-            
-            
-            self.viewModel.selectedRowType.value = sender.sectionType
-            
-            tableView.beginUpdates()
             
             let indexSet:NSMutableIndexSet = NSMutableIndexSet(index: current)
             if let previousSelection = previousSelection {
                 indexSet.addIndex(previousSelection)
             }
             
+            self.viewModel.selectedRowType.value = sender.sectionType
             tableView.reloadSections(indexSet, withRowAnimation: UITableViewRowAnimation.None)
             
             tableView.endUpdates()
