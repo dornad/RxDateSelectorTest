@@ -149,23 +149,7 @@ extension RxViewModel {
         else if type == .TimeZone {
             
             return self.timeZone.rxVariable
-                .map { timezone -> String in
-                    var label = ""
-                    do {
-                        label = try getTimezoneLabel(timezone)
-                    }
-                    catch TimeZonePickerErrors.NameInvalid {
-                        print("The NSTimeZone stored inside managedTimeZones is not a valid NSTimeZone name.")
-                    }
-                    catch TimeZonePickerErrors.NotFound(let message) {
-                        print("TimeZone not found! here's the message: \(message)")
-                    }
-                    catch {
-                        print("something went very wrong...")
-                    }
-
-                    return label
-                }
+                .map { $0.getLabel() }
                 .asObservable()
         }
         
@@ -174,5 +158,26 @@ extension RxViewModel {
             return Variable( "" ).asObservable()
         }
     }
+}
+
+extension NSTimeZone {
     
+    func getLabel() -> String {
+        
+        var label = ""
+        do {
+            label = try getTimezoneLabel(self)
+        }
+        catch TimeZonePickerErrors.NameInvalid {
+            print("The NSTimeZone stored inside managedTimeZones is not a valid NSTimeZone name.")
+        }
+        catch TimeZonePickerErrors.NotFound(let message) {
+            print("TimeZone not found! here's the message: \(message)")
+        }
+        catch {
+            print("something went very wrong...")
+        }
+        
+        return label
+    }
 }

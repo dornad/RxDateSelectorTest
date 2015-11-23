@@ -33,6 +33,13 @@ class PickerViewTableViewCell : UITableViewCell, PickerCellType {
         self.picker.delegate = self
         self.picker.dataSource = self
         
+        // find the current selected row and select it
+        let selectedLabel = viewModel.timeZone.value.getLabel()
+        let index = everyTimeZonePlusSeparators.indexOf(selectedLabel)
+        if let index = index {
+            self.picker.selectRow(index, inComponent: 0, animated: false)
+        }
+
         self.picker.snp_makeConstraints { (make) -> Void in
             make.left
                 .right
