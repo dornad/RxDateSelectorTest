@@ -231,68 +231,121 @@ public typealias SectionDesc = (type:SectionType, state:SectionState, selectionS
 
 // MARK: Time Zones
 
+func + <KeyType, ValueType> (left: Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
+    
+    var joined = left
+    for (k,v) in right {
+        joined.updateValue(v, forKey: k)
+    }
+    return joined
+}
+
 enum TimeZonePickerErrors : ErrorType {
-    case NameInvalid
+    case NameInvalid(message:String)
     case NotFound(message:String)
 }
 
-let managedTimeZones = [
-    "Abu Dhabi":                    NSTimeZone(name:"Asia/Muscat"),
-    "Adelaide":                     NSTimeZone(name:"Australia/Adelaide"),
-    "Alaska":                       NSTimeZone(name:"America/Juneau"),
-    "Athens":                       NSTimeZone(name:"Europe/Athens"),
-    "Atlantic Time (Canada)":       NSTimeZone(name:"America/Halifax"),
-    "Auckland":                     NSTimeZone(name:"Pacific/Auckland"),
-    "Bangkok":                      NSTimeZone(name:"Asia/Bangkok"),
-    "Buenos Aires":                 NSTimeZone(name:"America/Argentina/Buenos_Aires"),
-    "Cape Verde Is.":               NSTimeZone(name:"Atlantic/Cape_Verde"),
-    "Caracas":                      NSTimeZone(name:"America/Caracas"),
-    "Central Time (US & Canada)":   NSTimeZone(name:"America/Chicago"),
-    "Dhaka":                        NSTimeZone(name:"Asia/Dhaka"),
-    "Eastern Time (US & Canada)":   NSTimeZone(name:"America/New_York"),
-    "Hawaii":                       NSTimeZone(name:"Pacific/Honolulu"),
-    "Hong Kong":                    NSTimeZone(name:"Asia/Hong_Kong"),
-    "Islamabad":                    NSTimeZone(name:"Asia/Karachi"),
-    "Kabul":                        NSTimeZone(name:"Asia/Kabul"),
-    "Kathmandu":                    NSTimeZone(name:"Asia/Kathmandu"),
-    "London":                       NSTimeZone(name:"Europe/London"),
-    "Mid-Atlantic":                 NSTimeZone(name:"Atlantic/South_Georgia"),
-    "Moscow":                       NSTimeZone(name:"Europe/Moscow"),
-    "Mountain Time (US & Canada)":  NSTimeZone(name:"America/Denver"),
-    "New Caledonia":                NSTimeZone(name:"Pacific/Noumea"),
-    "New Delhi":                    NSTimeZone(name:"Asia/Kolkata"),
-    "Newfoundland":                 NSTimeZone(name:"America/St_Johns"),
-    "Nuku'alofa":                   NSTimeZone(name:"Pacific/Tongatapu"),
-    "Pacific Time (US & Canada)":   NSTimeZone(name:"America/Los_Angeles"),
-    "Paris":                        NSTimeZone(name:"Europe/Paris"),
-    "Rangoon":                      NSTimeZone(name:"Asia/Rangoon"),
-    "Samoa":                        NSTimeZone(name:"Pacific/Apia"),
-    "Sydney":                       NSTimeZone(name:"Australia/Sydney"),
-    "Tehran":                       NSTimeZone(name:"Asia/Tehran"),
-    "Tokyo":                        NSTimeZone(name:"Asia/Tokyo")
-];
+struct TimeZoneConstants {
+    
+    static let ukTimeZonesKeys: [String] = ["London"]
+    
+    static let usaTimeZonesKeys: [String] = [
+        "Alaska",
+        "Central Time (US & Canada)",
+        "Eastern Time (US & Canada)",
+        "Mountain Time (US & Canada)",
+        "Pacific Time (US & Canada)"
+    ]
+    
+    static let otherTimeZoneKeys: [String] = [
+        "Abu Dhabi",
+        "Adelaide",
+        "Athens",
+        "Atlantic Time (Canada)",
+        "Auckland",
+        "Bangkok",
+        "Buenos Aires",
+        "Cape Verde Is.",
+        "Caracas",
+        "Dhaka",
+        "Hawaii",
+        "Hong Kong",
+        "Islamabad",
+        "Kabul",
+        "Kathmandu",
+        "Mid-Atlantic",
+        "Moscow",
+        "New Caledonia",
+        "New Delhi",
+        "Newfoundland",
+        "Nuku'alofa",
+        "Paris",
+        "Rangoon",
+        "Samoa",
+        "Sydney",
+        "Tehran",
+        "Tokyo",
+    ]
+    
+    static let managedTimeZones = [
+        "Central Time (US & Canada)":   NSTimeZone(name:"America/Chicago"),
+        "Eastern Time (US & Canada)":   NSTimeZone(name:"America/New_York"),
+        "Mountain Time (US & Canada)":  NSTimeZone(name:"America/Denver"),
+        "Pacific Time (US & Canada)":   NSTimeZone(name:"America/Los_Angeles"),
+        "Alaska":                       NSTimeZone(name:"America/Juneau"),
+        "London":                       NSTimeZone(name:"Europe/London"),
+        "Abu Dhabi":                    NSTimeZone(name:"Asia/Muscat"),
+        "Adelaide":                     NSTimeZone(name:"Australia/Adelaide"),
+        "Athens":                       NSTimeZone(name:"Europe/Athens"),
+        "Atlantic Time (Canada)":       NSTimeZone(name:"America/Halifax"),
+        "Auckland":                     NSTimeZone(name:"Pacific/Auckland"),
+        "Bangkok":                      NSTimeZone(name:"Asia/Bangkok"),
+        "Buenos Aires":                 NSTimeZone(name:"America/Argentina/Buenos_Aires"),
+        "Cape Verde Is.":               NSTimeZone(name:"Atlantic/Cape_Verde"),
+        "Caracas":                      NSTimeZone(name:"America/Caracas"),
+        "Dhaka":                        NSTimeZone(name:"Asia/Dhaka"),
+        "Hawaii":                       NSTimeZone(name:"Pacific/Honolulu"),
+        "Hong Kong":                    NSTimeZone(name:"Asia/Hong_Kong"),
+        "Islamabad":                    NSTimeZone(name:"Asia/Karachi"),
+        "Kabul":                        NSTimeZone(name:"Asia/Kabul"),
+        "Kathmandu":                    NSTimeZone(name:"Asia/Kathmandu"),
+        "Mid-Atlantic":                 NSTimeZone(name:"Atlantic/South_Georgia"),
+        "Moscow":                       NSTimeZone(name:"Europe/Moscow"),
+        "New Caledonia":                NSTimeZone(name:"Pacific/Noumea"),
+        "New Delhi":                    NSTimeZone(name:"Asia/Kolkata"),
+        "Newfoundland":                 NSTimeZone(name:"America/St_Johns"),
+        "Nuku'alofa":                   NSTimeZone(name:"Pacific/Tongatapu"),
+        "Paris":                        NSTimeZone(name:"Europe/Paris"),
+        "Rangoon":                      NSTimeZone(name:"Asia/Rangoon"),
+        "Samoa":                        NSTimeZone(name:"Pacific/Apia"),
+        "Sydney":                       NSTimeZone(name:"Australia/Sydney"),
+        "Tehran":                       NSTimeZone(name:"Asia/Tehran"),
+        "Tokyo":                        NSTimeZone(name:"Asia/Tokyo")
+    ];
+
+}
 
 func getTimezoneFromLabel( label: String ) throws -> NSTimeZone
 {
-    for (timezoneName, timezone) in managedTimeZones {
+    for (timezoneName, timezone) in TimeZoneConstants.managedTimeZones {
         
         if timezoneName == label {
             return timezone!
         }
     }
     
-    throw TimeZonePickerErrors.NotFound(message: "NSTimeZone not found using label: \(label)")
+    throw TimeZonePickerErrors.NotFound(message: "NSTimeZone not found! Searching with label: \(label)")
 }
 
 func getTimezoneLabel( tz : NSTimeZone ) throws -> String {
     
-    for (timezoneLabel, timezone) in managedTimeZones {
+    for (timezoneLabel, timezone) in TimeZoneConstants.managedTimeZones {
         if let timezone = timezone {
             if timezone.name == tz.name {
                 return timezoneLabel
             }
         } else {
-            throw TimeZonePickerErrors.NameInvalid
+            throw TimeZonePickerErrors.NameInvalid(message: "The NSTimeZone? instance \(timezone) for label [\(timezoneLabel)] could not be unwrapped.")
         }
     }
     throw TimeZonePickerErrors.NotFound(message: "NSTimeZone label not found for timezone.  Comparison key is: \(tz.name)")

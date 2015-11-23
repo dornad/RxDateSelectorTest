@@ -154,9 +154,16 @@ extension RxViewModel {
                     do {
                         label = try getTimezoneLabel(timezone)
                     }
-                    catch {
-                        print ("something went wrong...")
+                    catch TimeZonePickerErrors.NameInvalid {
+                        print("The NSTimeZone stored inside managedTimeZones is not a valid NSTimeZone name.")
                     }
+                    catch TimeZonePickerErrors.NotFound(let message) {
+                        print("TimeZone not found! here's the message: \(message)")
+                    }
+                    catch {
+                        print("something went very wrong...")
+                    }
+
                     return label
                 }
                 .asObservable()
