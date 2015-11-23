@@ -149,7 +149,16 @@ extension RxViewModel {
         else if type == .TimeZone {
             
             return self.timeZone.rxVariable
-                .map { return $0.name }
+                .map { timezone -> String in
+                    var label = ""
+                    do {
+                        label = try getTimezoneLabel(timezone)
+                    }
+                    catch {
+                        print ("something went wrong...")
+                    }
+                    return label
+                }
                 .asObservable()
         }
         

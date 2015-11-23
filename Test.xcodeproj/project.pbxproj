@@ -19,6 +19,7 @@
 		5CA77A621BF54F020035F065 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		5CA77A631BF54F020035F065 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		5CB8661F1BFA8790002962AE /* ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB8661E1BFA8790002962AE /* ViewModelTests.swift */; };
+		5CC848D81C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC848D71C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift */; };
 		5CE283431BF4F2FD00A0DB22 /* RxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */; };
 		5CE283491BF500AC00A0DB22 /* RxViewController_UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */; };
 		5CEDC1661BFFD8B9003D80E5 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */; };
@@ -50,6 +51,7 @@
 		5CB8661C1BFA8790002962AE /* TestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CB8661E1BFA8790002962AE /* ViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelTests.swift; sourceTree = "<group>"; };
 		5CB866201BFA8790002962AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5CC848D71C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeZonePickerTableViewCell.swift; path = Rx/TimeZonePickerTableViewCell.swift; sourceTree = "<group>"; };
 		5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = Rx/RxViewModel.swift; sourceTree = "<group>"; };
 		5CE283471BF4FC6800A0DB22 /* RxSwift.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RxSwift.playground; sourceTree = "<group>"; };
 		5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewController_UIExtensions.swift; path = Rx/RxViewController_UIExtensions.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */,
+				5CC848D71C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 				5CA77A631BF54F020035F065 /* (null) in Sources */,
 				5CE283431BF4F2FD00A0DB22 /* RxViewModel.swift in Sources */,
 				5C2CA4361BF234560081235C /* RxViewController.swift in Sources */,
+				5CC848D81C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift in Sources */,
 				5C5119351BF647A8001F708D /* SectionedTableViewDataSource.swift in Sources */,
 				5C2CA4341BF234560081235C /* AppDelegate.swift in Sources */,
 				5CA77A611BF54F020035F065 /* (null) in Sources */,
