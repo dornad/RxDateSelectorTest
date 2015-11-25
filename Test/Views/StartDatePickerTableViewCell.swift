@@ -23,36 +23,11 @@ protocol PickerCellType {
      - parameter viewModel:   ViewModel
      - parameter disposeBag:  dispose bag
      */
-    func setup(sectionDesc: SectionDesc, viewModel:RxViewModel, disposeBag: DisposeBag)
-}
-
-/// A Cell that displays a date picker for the end date of an event
-class EndDatePickerTableViewCell : StartDatePickerTableViewCell {
-    
-    override func setup(sectionDesc: SectionDesc, viewModel: RxViewModel, disposeBag: DisposeBag) {
-        self.picker.removeFromSuperview()
-        
-        self.contentView.addSubview(self.picker)
-        
-        self.picker.rx_date
-            .subscribeNext { value in
-                viewModel.endDate.value = value
-            }
-            .addDisposableTo(disposeBag)
-        
-        if let endDate = viewModel.endDate.value {
-            self.picker.date = endDate
-        }
-        
-        self.picker.snp_remakeConstraints(closure: { (make) -> Void in
-            make.width.equalTo(self.contentView)
-            make.height.equalTo(self.contentView)
-        })
-    }
+    func setup(sectionDesc: SectionDesc, viewModel:RxViewModel, disposeBag: DisposeBag)    
 }
 
 /// A Cell that displays a date picker for the start date of an event
-class StartDatePickerTableViewCell : UITableViewCell, PickerCellType {
+public class StartDatePickerTableViewCell : UITableViewCell, PickerCellType {
     
     var picker:UIDatePicker
     
@@ -61,7 +36,7 @@ class StartDatePickerTableViewCell : UITableViewCell, PickerCellType {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         self.picker = UIDatePicker()
         super.init(coder: aDecoder)
     }

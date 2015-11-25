@@ -10,6 +10,14 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+
+public struct ResponseModel {
+    var startDate:NSDate?
+    var endDate:NSDate?
+    var timezone:NSTimeZone
+    var allDay:Bool
+}
+
 /**
  Compare two dates, ensure that they differ by at least 60 seconds.
  
@@ -48,6 +56,16 @@ public class RxViewModel {
     public var allDay:Variable<Bool>
     
     public var selectedRowType:ValueHolder<SectionType?>
+    
+    // Response Model
+    
+    public var response : ResponseModel {
+        return ResponseModel(
+            startDate: self.startDate.value,
+            endDate: self.endDate.value,
+            timezone: self.timeZone.value,
+            allDay: self.allDay.value)
+    }
     
     // Helpers and Transformers
     
@@ -168,29 +186,3 @@ extension RxViewModel {
     }
 }
 
-extension NSTimeZone {
-
-    /**
-     Return the Paperless Post label for the current timezone.  (Same values as PPGeography)
-     
-     - returns: the label, or title to be displayed in the date picker
-     */
-    func getLabel() -> String {
-        
-        var label = ""
-        do {
-            label = try getTimezoneLabel(self)
-        }
-        catch TimeZonePickerErrors.NameInvalid(let message) {
-            print("TimeZone could not be initialized.  Message: \(message).")
-        }
-        catch TimeZonePickerErrors.NotFound(let message) {
-            print("TimeZone not found! here's the message: \(message)")
-        }
-        catch {
-            print("something went very wrong...")
-        }
-        
-        return label
-    }
-}

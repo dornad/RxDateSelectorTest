@@ -16,6 +16,10 @@ class PickerViewTableViewCell : UITableViewCell, PickerCellType {
     var picker:UIPickerView
     var viewModel:RxViewModel?
     
+    struct Constants {
+        static let Identifier = "PickerViewTableViewCell"
+    }
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         self.picker = UIPickerView()
         super.init(style: style, reuseIdentifier: reuseIdentifier)

@@ -21,6 +21,11 @@ extension RxViewController {
      */
     internal struct UIConstants {
         
+        // Cell Identifiers
+        static let StartDateCellId  = "StartDateCellId"
+        static let EndDateCellId    = "EndDateCellId"
+        static let TimeZoneCellId   = "TimeZoneDateCellId"
+        
         // Table Constants
         static let tableHeaderHeight:CGFloat    = 50
         static let tableHeaderFrame:CGRect      = CGRectMake(0, 0, 180, UIConstants.tableHeaderHeight)
@@ -137,6 +142,12 @@ extension RxViewController {
         button.titleLabel?.font = UIFont.helveticaNeueMediumFontWithSize(12)
         button.setTitle(NSLocalizedString("SAVE", comment: "Title of Save button in Date/Time picker"), forState: .Normal)
         
+        button.rx_tap
+            .subscribeNext { [weak self]() -> Void in
+                print("Response: \(self?.viewModel.response)")
+            }
+            .addDisposableTo(self.disposeBag)
+        
         sv.addSubview(button)
         
         button.snp_makeConstraints { (make) -> Void in
@@ -246,19 +257,15 @@ extension RxViewController {
             return nil
         }
         
-        let allDaySwitch = UISwitch()
-        
+        let allDaySwitch = UISwitch(frame: CGRect(x: 0,y: 0,width: 12,height: 12))
         allDaySwitch.on = self.viewModel.allDay.value
-        
-        allDaySwitch.rx_value
-            .subscribeNext { [weak self] value -> Void in
-                self?.viewModel.allDay.value = value
-            }
-            .addDisposableTo(disposeBag)
-        
+        allDaySwitch.addTarget(self, action: Selector("onAllDaySwitchChange:"), forControlEvents: UIControlEvents.ValueChanged)
         sv.addSubview(allDaySwitch)
-        
         return allDaySwitch
+    }
+    
+    @objc func onAllDaySwitchChange(sender:UISwitch) {
+        self.viewModel.allDay.value = sender.on
     }
 }
 

@@ -20,9 +20,10 @@
 		5CA77A631BF54F020035F065 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		5CB8661F1BFA8790002962AE /* ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB8661E1BFA8790002962AE /* ViewModelTests.swift */; };
 		5CC848D81C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC848D71C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift */; };
+		5CC848DB1C04B47300BD9407 /* EndDatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC848D91C04B47300BD9407 /* EndDatePickerTableViewCell.swift */; };
+		5CC848DC1C04B47300BD9407 /* StartDatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC848DA1C04B47300BD9407 /* StartDatePickerTableViewCell.swift */; };
 		5CE283431BF4F2FD00A0DB22 /* RxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */; };
 		5CE283491BF500AC00A0DB22 /* RxViewController_UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */; };
-		5CEDC1661BFFD8B9003D80E5 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */; };
 		A831A637043A9DE8CB0DBBC1 /* Pods_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696F85F7492A47662363057B /* Pods_Test.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,7 +41,7 @@
 		1B099B87994F464739DCA24E /* Pods-Test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test.release.xcconfig"; path = "Pods/Target Support Files/Pods-Test/Pods-Test.release.xcconfig"; sourceTree = "<group>"; };
 		5C2CA4301BF234560081235C /* Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C2CA4331BF234560081235C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5C2CA4351BF234560081235C /* RxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RxViewController.swift; path = Rx/RxViewController.swift; sourceTree = "<group>"; };
+		5C2CA4351BF234560081235C /* RxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxViewController.swift; sourceTree = "<group>"; };
 		5C2CA4381BF234560081235C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5C2CA43A1BF234560081235C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5C2CA43D1BF234560081235C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -51,11 +52,12 @@
 		5CB8661C1BFA8790002962AE /* TestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CB8661E1BFA8790002962AE /* ViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelTests.swift; sourceTree = "<group>"; };
 		5CB866201BFA8790002962AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5CC848D71C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeZonePickerTableViewCell.swift; path = Rx/TimeZonePickerTableViewCell.swift; sourceTree = "<group>"; };
-		5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = Rx/RxViewModel.swift; sourceTree = "<group>"; };
+		5CC848D71C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeZonePickerTableViewCell.swift; path = Views/TimeZonePickerTableViewCell.swift; sourceTree = "<group>"; };
+		5CC848D91C04B47300BD9407 /* EndDatePickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EndDatePickerTableViewCell.swift; path = Views/EndDatePickerTableViewCell.swift; sourceTree = "<group>"; };
+		5CC848DA1C04B47300BD9407 /* StartDatePickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StartDatePickerTableViewCell.swift; path = Views/StartDatePickerTableViewCell.swift; sourceTree = "<group>"; };
+		5CE283421BF4F2FD00A0DB22 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = ViewModels/RxViewModel.swift; sourceTree = "<group>"; };
 		5CE283471BF4FC6800A0DB22 /* RxSwift.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RxSwift.playground; sourceTree = "<group>"; };
-		5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewController_UIExtensions.swift; path = Rx/RxViewController_UIExtensions.swift; sourceTree = "<group>"; };
-		5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DatePickerTableViewCell.swift; path = Rx/DatePickerTableViewCell.swift; sourceTree = "<group>"; };
+		5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxViewController_UIExtensions.swift; sourceTree = "<group>"; };
 		696F85F7492A47662363057B /* Pods_Test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F83AFB3347733B5212CB8C /* Pods-Test.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Test/Pods-Test.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -106,7 +108,7 @@
 				5CC848D61C03824B00BD9407 /* ViewControllers */,
 				5CC848D51C03824300BD9407 /* ViewModels */,
 				5CA77A5A1BF548A10035F065 /* Views */,
-				5CA77A5D1BF54E6E0035F065 /* RxAdditions */,
+				5CA77A5D1BF54E6E0035F065 /* Additions */,
 				5CF281861BFCC91800982D0E /* Fonts */,
 				5CA77A5B1BF5494D0035F065 /* Common.swift */,
 				5C2CA4331BF234560081235C /* AppDelegate.swift */,
@@ -129,18 +131,19 @@
 		5CA77A5A1BF548A10035F065 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5CEDC1651BFFD8B9003D80E5 /* DatePickerTableViewCell.swift */,
+				5CC848D91C04B47300BD9407 /* EndDatePickerTableViewCell.swift */,
+				5CC848DA1C04B47300BD9407 /* StartDatePickerTableViewCell.swift */,
 				5CC848D71C03B4BD00BD9407 /* TimeZonePickerTableViewCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
 		};
-		5CA77A5D1BF54E6E0035F065 /* RxAdditions */ = {
+		5CA77A5D1BF54E6E0035F065 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
 				5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */,
 			);
-			name = RxAdditions;
+			name = Additions;
 			sourceTree = "<group>";
 		};
 		5CB8661D1BFA8790002962AE /* TestTests */ = {
@@ -167,7 +170,7 @@
 				5C2CA4351BF234560081235C /* RxViewController.swift */,
 				5CE283481BF500AC00A0DB22 /* RxViewController_UIExtensions.swift */,
 			);
-			name = ViewControllers;
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 		5CF281861BFCC91800982D0E /* Fonts */ = {
@@ -347,6 +350,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CE283491BF500AC00A0DB22 /* RxViewController_UIExtensions.swift in Sources */,
+				5CC848DB1C04B47300BD9407 /* EndDatePickerTableViewCell.swift in Sources */,
+				5CC848DC1C04B47300BD9407 /* StartDatePickerTableViewCell.swift in Sources */,
 				5CA77A631BF54F020035F065 /* (null) in Sources */,
 				5CE283431BF4F2FD00A0DB22 /* RxViewModel.swift in Sources */,
 				5C2CA4361BF234560081235C /* RxViewController.swift in Sources */,
@@ -356,7 +361,6 @@
 				5CA77A611BF54F020035F065 /* (null) in Sources */,
 				5CA77A5C1BF5494D0035F065 /* Common.swift in Sources */,
 				5CA77A621BF54F020035F065 /* (null) in Sources */,
-				5CEDC1661BFFD8B9003D80E5 /* DatePickerTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

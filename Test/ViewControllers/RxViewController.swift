@@ -11,7 +11,9 @@ import UIKit
 import RxSwift
 import SnapKit
 
+
 public class RxViewController : UIViewController {
+    
     
     /// The tableview.
     var tableView:UITableView!
@@ -58,12 +60,14 @@ extension RxViewController {
             self.view.frame = fr
         }
         
+        self.viewModel = RxViewModel(startDate: nil,endDate: nil,timeZone: NSTimeZone.localTimeZone(),allDay: true)
+        
         self.tableView = UITableView(frame: self.view!.frame, style: .Grouped)
         self.view?.addSubview(tableView)
         
-        self.tableView.registerClass(EndDatePickerTableViewCell.self, forCellReuseIdentifier: "EndDatePickerCell")
-        self.tableView.registerClass(StartDatePickerTableViewCell.self, forCellReuseIdentifier: "StartDatePickerCell")
-        self.tableView.registerClass(PickerViewTableViewCell.self, forCellReuseIdentifier: "PickerViewCell")
+        self.tableView.registerClass(EndDatePickerTableViewCell.self, forCellReuseIdentifier: UIConstants.EndDateCellId)
+        self.tableView.registerClass(StartDatePickerTableViewCell.self, forCellReuseIdentifier: UIConstants.StartDateCellId)
+        self.tableView.registerClass(PickerViewTableViewCell.self, forCellReuseIdentifier: UIConstants.TimeZoneCellId)
         self.tableView.backgroundColor = UIColor.whiteColor()
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.tableFooterView = tableFooterView()
@@ -95,9 +99,9 @@ extension RxViewController {
             let identifier:String
             if item.type.isDateType() {
                 
-                identifier = item.type == .StartDate ? "StartDatePickerCell" : "EndDatePickerCell"
+                identifier = item.type == .StartDate ? UIConstants.StartDateCellId : UIConstants.EndDateCellId
             } else {
-                identifier = "PickerViewCell"
+                identifier = UIConstants.TimeZoneCellId
             }
             
             let cell = tv.dequeueReusableCellWithIdentifier(identifier, forIndexPath: indexPath) as! PickerCellType
