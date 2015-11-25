@@ -11,9 +11,7 @@ import UIKit
 import RxSwift
 import SnapKit
 
-
 public class RxViewController : UIViewController {
-    
     
     /// The tableview.
     var tableView:UITableView!
@@ -24,7 +22,11 @@ public class RxViewController : UIViewController {
     /// Rx bag of wonders...
     let disposeBag = DisposeBag()
     
-    /// Reactive datasource, used in the table view delegate.
+    /**
+     *  A variant of Rx's reactive UITableView datasource that can handle our ViewModel's models (type `SectionDesc`).
+     *
+     *  It has two closures:  A "cell factory" and a sectionRowCount closure.
+     */
     var dataSource: RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper<[SectionDesc]>!
     
     /// Our ViewModel, initialized with its default values
@@ -60,7 +62,7 @@ extension RxViewController {
             self.view.frame = fr
         }
         
-        self.viewModel = RxViewModel(startDate: nil,endDate: nil,timeZone: NSTimeZone.localTimeZone(),allDay: true)
+        self.viewModel = RxViewModel()
         
         self.tableView = UITableView(frame: self.view!.frame, style: .Grouped)
         self.view?.addSubview(tableView)
@@ -72,7 +74,7 @@ extension RxViewController {
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.tableFooterView = tableFooterView()
         self.tableView.sectionFooterHeight = 1
-
+        
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = UIConstants.rowHeightClosed
         
@@ -85,31 +87,28 @@ extension RxViewController {
      */
     func setupRx() {
         
-        /**
-        *  A variant of Rx's reactive UITableView datasource that can handle our ViewModel's models (type SectionDesc).
-        * 
-        *  It has two closures:  A "cell factory" and a sectionRowCount closure.
-        *
-        *  @return A Reactive datasource.
-        */
+        // initialize datasource with its cell configuration and section row count callbacks.
         self.dataSource = RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper(cellFactory: { (tv, s, r, item) -> UITableViewCell in
-            // setup a cell via Rx
+            // cell configuration   callback
             let indexPath = NSIndexPath(forItem: r, inSection: s)
             
+            // Get the correct cell identifier
             let identifier:String
-            if item.type.isDateType() {
-                
-                identifier = item.type == .StartDate ? UIConstants.StartDateCellId : UIConstants.EndDateCellId
+            if item.type == .StartDate {
+                identifier = UIConstants.StartDateCellId
+            } else if item.type == .EndDate {
+                identifier = UIConstants.EndDateCellId
             } else {
                 identifier = UIConstants.TimeZoneCellId
             }
             
+            // dequeue a cell, configure it and return it.
             let cell = tv.dequeueReusableCellWithIdentifier(identifier, forIndexPath: indexPath) as! PickerCellType
-            
             cell.setup( item, viewModel: self.viewModel, disposeBag: self.disposeBag )
-            
             return (cell as? UITableViewCell)!
-        }) { (i:Int, item:SectionDesc) -> Int in // sectionRowCount closure
+            
+        }) { (i:Int, item:SectionDesc) -> Int in
+            // sectionRowCount closure
             return item.selectionState == .Selected ? 1 : 0
         }
         

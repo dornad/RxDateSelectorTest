@@ -28,7 +28,6 @@ let holder: ValueHolder<String> = RxValueHolder(value)
 myValueHolder.rxVariable
     .asObservable()
     .subscribeNext { value -> Void in
-
         print("value = \(value)")
     }
 
@@ -37,15 +36,19 @@ myValueHolder.value = "Foo Bar"
 */
 public struct ValueHolder<T> {
     
+    /// A (generic) description for a function that receives two values of the same type and returns true if they match a condition.
     public typealias CallbackType = (_:T,_:T) -> Bool
     
     /// The previous value used by the holder
     private var previousValue:T?
     
+    /// A callback that can check a condition before setting new values.
     private var myCallback: CallbackType? = nil
     
+    /// A RxSwift Variable type
     public var rxVariable:Variable<T>
     
+    /// The value stored by a ValueHolder type
     public var value: T {
         get {
             return self.rxVariable.value

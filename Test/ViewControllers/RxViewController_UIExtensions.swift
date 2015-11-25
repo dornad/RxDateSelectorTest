@@ -48,7 +48,6 @@ extension RxViewController {
      */
     func tableHeaderView() -> UIView? {
         
-        // for some reason snapkit doesn't like working with the header and footer.
         let sv = UIView(frame: UIConstants.tableHeaderFrame)
         tableHeaderLabel(withSuperview: sv)
         lineSeparator(withSuperview: sv)
@@ -63,7 +62,6 @@ extension RxViewController {
      */
     func tableFooterView() -> UIView? {
         
-        // for some reason snapkit doesn't like working with the header and footer.
         let sv = UIView(frame: UIConstants.tableFooterFrame)
         tableFooterButton(withSuperview: sv)
         
@@ -83,7 +81,7 @@ extension RxViewController {
         sectionHeaderLabel(sectionDesc, withSuperview: header)
         sectionHeaderAccessory(sectionDesc, withSuperview: header)
         lineSeparator(withSuperview: header)
-        addGestureRecognizerTo(sectionDesc, toView: header)
+        addGestureRecognizerTo(sectionDesc, toHeaderView: header)
         
         return header
     }
@@ -257,13 +255,20 @@ extension RxViewController {
             return nil
         }
         
-        let allDaySwitch = UISwitch(frame: CGRect(x: 0,y: 0,width: 12,height: 12))
+        // note: UISwitch's rx_value causes a crash, thus we are using the vanilla (target-action) approach from UIKit.
+        
+        let allDaySwitch = UISwitch()
         allDaySwitch.on = self.viewModel.allDay.value
         allDaySwitch.addTarget(self, action: Selector("onAllDaySwitchChange:"), forControlEvents: UIControlEvents.ValueChanged)
         sv.addSubview(allDaySwitch)
         return allDaySwitch
     }
     
+    /**
+     Event responder for all day switch flip.
+     
+     - parameter sender: the UISwitch instance.
+     */
     @objc func onAllDaySwitchChange(sender:UISwitch) {
         self.viewModel.allDay.value = sender.on
     }
@@ -274,17 +279,19 @@ extension RxViewController {
 extension RxViewController {
     
     /**
-     Adds a gesture recognizer to a view.
+     Adds a gesture recognizer to a header view.
      
      - parameter sectionDesc: A model that describes the current section.
      - parameter view:    the view where we will attach the UIGestureRecognizer
      */
-    func addGestureRecognizerTo(sectionDesc:SectionDesc, toView view:UIView) {
+    func addGestureRecognizerTo(sectionDesc:SectionDesc, toHeaderView view:UIView) {
         
         // We are adding gesture recognizer on all section header's, except for the "All Day" section
         guard sectionDesc.type != .AllDay else {
             return
         }
+        
+        // Note:  There is a Rx addition to make gesture recognizer's compatible with RxSwift.  Could not make it work though :(
         
         let singleTapRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("onTapInView:"))
         singleTapRecognizer.numberOfTouchesRequired = 1

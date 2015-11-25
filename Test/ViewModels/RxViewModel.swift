@@ -10,8 +10,11 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-
-public struct ResponseModel {
+/**
+ *  A struct used to encapsulate all the models handled by this ViewModel.  
+ Used for communication with the rest of the Event Details view controllers.
+ */
+public struct ResponseModel { // Any suggestions for a better name ?  I hate naming things...
     var startDate:NSDate?
     var endDate:NSDate?
     var timezone:NSTimeZone
@@ -61,10 +64,10 @@ public class RxViewModel {
     
     public var response : ResponseModel {
         return ResponseModel(
-            startDate: self.startDate.value,
-            endDate: self.endDate.value,
-            timezone: self.timeZone.value,
-            allDay: self.allDay.value)
+            startDate:  self.startDate.value,
+            endDate:    self.endDate.value,
+            timezone:   self.timeZone.value,
+            allDay:     self.allDay.value)
     }
     
     // Helpers and Transformers
@@ -72,6 +75,10 @@ public class RxViewModel {
     let dateFormatter:NSDateFormatter = NSDateFormatter()
     
     // Initializers
+    
+    convenience init(data:ResponseModel) {
+        self.init(startDate: data.startDate, endDate: data.endDate, timeZone: data.timezone, allDay: data.allDay)
+    }
     
     required public init(startDate:NSDate? = nil, endDate:NSDate? = nil, timeZone:NSTimeZone = NSTimeZone.localTimeZone(), allDay: Bool=false) {
         
@@ -120,7 +127,7 @@ extension RxViewModel {
     }
     
     /**
-     Combine our sources into a single observable.
+     Combine our models Rx "sources" into a single source for Rx.
      
      - returns: A observable of type SectionDesc
      */
@@ -133,7 +140,7 @@ extension RxViewModel {
             self.endDate.rxVariable,
             self.timeZone.rxVariable,
             self.allDay,
-            self.selectedRowType.rxVariable) { (v1, v2, v3, v4, v5) -> [SectionDesc] in
+            self.selectedRowType.rxVariable) { (v1, v2, _, _, _) -> [SectionDesc] in
                 
                 let sDateState:SectionState = (v1 != nil) ? .Present : .Missing
                 let eDateState:SectionState = (v2 != nil) ? .Present : .Missing
@@ -171,15 +178,11 @@ extension RxViewModel {
                 return self.dateFormatter.stringFromDate(date)
             })
         }
-            
         else if type == .TimeZone {
-            
             return self.timeZone.rxVariable
                 .map { $0.getLabel() }
                 .asObservable()
         }
-        
-
         else {
             return Variable( "" ).asObservable()
         }
