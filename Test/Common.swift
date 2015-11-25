@@ -10,24 +10,6 @@ import UIKit
 
 import RxSwift
 
-extension String {
-    var lastPathComponent: String {
-        get {
-            return (self as NSString).lastPathComponent
-        }
-    }
-}
-
-public func ENTER_LOG(@autoclosure message:  () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {
-    
-    print("\(filename.lastPathComponent) - \(function) - @% ENTER", message())
-}
-
-public func EXIT_LOG(@autoclosure message:  () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {
-    
-    print("\(filename.lastPathComponent) - \(function) - @% EXIT", message())
-}
-
 // MARK: ValueHolder
 
 /** A struct that allows types to be stored in Rx Observables, while providing their non-rx value, plus other benefits.
@@ -101,8 +83,6 @@ public struct ValueHolder<T> {
 // MARK: Custom Fonts
 
 extension UIFont {
-    
-    // For testing purposes we are not including helvetica neue in the test project.  We are mapping this to the system font.
     
     public static func helveticaNeueLightFontWithSize(size:CGFloat) -> UIFont {
         return UIFont(name: "HelveticaNeue-Light", size: size) ?? UIFont.systemFontOfSize(size)
@@ -231,6 +211,14 @@ public typealias SectionDesc = (type:SectionType, state:SectionState, selectionS
 
 // MARK: Time Zones
 
+/**
+Override the "+" operator to implement Dictionary joining
+
+- parameter left:  a dictionary
+- parameter right: another dictionary
+
+- returns: A dictionary representing the union between the two dictionaries.
+*/
 func + <KeyType, ValueType> (left: Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
     
     var joined = left
@@ -240,15 +228,27 @@ func + <KeyType, ValueType> (left: Dictionary<KeyType, ValueType>, right: Dictio
     return joined
 }
 
+/**
+ TimeZone Picker Errors
+ 
+ - InvalidTimeZoneName: A NSTimeZone is being initialized with an incorrect name parameter.  i.e.:  `NSTimeZone -initWithName:`
+ - NotFound:    No NSTimeZone instance was found that matches the provided search paramerers
+ */
 enum TimeZonePickerErrors : ErrorType {
-    case NameInvalid(message:String)
+    case InvalidTimeZoneName(message:String)
     case NotFound(message:String)
 }
 
 struct TimeZoneConstants {
     
+    /// A list of Strings that we show in time zone pickers for the UK.  
+    /// The list is sorted alphabetically.
+    /// Each item in this list is a key for a NSTimeZone instance stored inside managedTimeZones
     static let ukTimeZonesKeys: [String] = ["London"]
     
+    /// A list of Strings that we show in time zone pickers for the USA.
+    /// The list is sorted alphabetically.
+    /// Each item in this list is a key for a NSTimeZone instance stored inside managedTimeZones
     static let usaTimeZonesKeys: [String] = [
         "Alaska",
         "Central Time (US & Canada)",
@@ -257,6 +257,9 @@ struct TimeZoneConstants {
         "Pacific Time (US & Canada)"
     ]
     
+    /// A list of Strings that we show in time zone pickers corresponding to zones not in the USA or UK
+    /// The list is sorted alphabetically.
+    /// Each item in this list is a key for a NSTimeZone instance stored inside managedTimeZones
     static let otherTimeZoneKeys: [String] = [
         "Abu Dhabi",
         "Adelaide",
@@ -287,6 +290,7 @@ struct TimeZoneConstants {
         "Tokyo",
     ]
     
+    /// The list of all the timezones that should be displayed.
     static let managedTimeZones = [
         "Central Time (US & Canada)":   NSTimeZone(name:"America/Chicago"),
         "Eastern Time (US & Canada)":   NSTimeZone(name:"America/New_York"),
@@ -325,32 +329,76 @@ struct TimeZoneConstants {
 
 }
 
-func getTimezoneFromLabel( label: String ) throws -> NSTimeZone
-{
-    for (timezoneName, timezone) in TimeZoneConstants.managedTimeZones {
+extension NSTimeZone {
+    
+    /**
+     Return the Paperless Post label for the current timezone.  (Same values as PPGeography)
+     
+     - returns: the label, or title to be displayed in the date picker
+     */
+    func getLabel() -> String {
         
-        if timezoneName == label {
-            return timezone!
+        var label = ""
+        do {
+            label = try getTimezoneLabel(self)
         }
+        catch TimeZonePickerErrors.InvalidTimeZoneName(let message) {
+            print("TimeZone could not be initialized.  Message: \(message).")
+        }
+        catch TimeZonePickerErrors.NotFound(let message) {
+            print("TimeZone not found! here's the message: \(message)")
+        }
+        catch {
+            print("something went very wrong...")
+        }
+        
+        return label
     }
     
-    throw TimeZonePickerErrors.NotFound(message: "NSTimeZone not found! Searching with label: \(label)")
-}
-
-func getTimezoneLabel( tz : NSTimeZone ) throws -> String {
-    
-    for (timezoneLabel, timezone) in TimeZoneConstants.managedTimeZones {
-        if let timezone = timezone {
-            if timezone.name == tz.name {
-                return timezoneLabel
+    /**
+     Retrieve a NSTimeZone instance from its label.
+     
+     Used to retrieve a NSTimeZone instance corresponding to the label value from a UIPickerView.
+     
+     - parameter label: A String that should match a key in the managedTimeZones Dictionary ( [String: NSTimeZone?] )
+     
+     - throws: See TimeZonePickerErrors for a list of possible errors.
+     
+     - returns: A NSTimeZone instance corresponding to the label parameter.
+     */
+    func getTimezoneFromLabel( label: String ) throws -> NSTimeZone
+    {
+        for (timezoneName, timezone) in TimeZoneConstants.managedTimeZones {
+            
+            if timezoneName == label {
+                return timezone!
             }
-        } else {
-            throw TimeZonePickerErrors.NameInvalid(message: "The NSTimeZone? instance \(timezone) for label [\(timezoneLabel)] could not be unwrapped.")
         }
+        
+        throw TimeZonePickerErrors.NotFound(message: "NSTimeZone not found! Searching with label: \(label)")
     }
-    throw TimeZonePickerErrors.NotFound(message: "NSTimeZone label not found for timezone.  Comparison key is: \(tz.name)")
+    
+    /**
+     Retrieve the label corresponding to a NSTimeZone instance.
+     
+     - parameter tz: A NSTimeZone instance for which we want to find a label.
+     
+     - throws: See TimeZonePickerErrors for a list of possible errors.
+     
+     - returns: The key (String) that matches the parameter "tz" (NSTimeZone) in the managedTimeZones Dictionary ( [String: NSTimeZone?] )
+     */
+    func getTimezoneLabel( tz : NSTimeZone ) throws -> String {
+        
+        for (timezoneLabel, timezone) in TimeZoneConstants.managedTimeZones {
+            if let timezone = timezone {
+                if timezone.name == tz.name {
+                    return timezoneLabel
+                }
+            } else {
+                throw TimeZonePickerErrors.InvalidTimeZoneName(message: "A NSTimeZone instance cannot be instantiated due to an incorrect name param.  Check managedTimeZones for values similar to \(tz.name)")
+            }
+        }
+        throw TimeZonePickerErrors.NotFound(message: "Label not found for NSTimeZone.  Comparison key is: \(tz.name)")
+    }
+
 }
-
-
-
-
