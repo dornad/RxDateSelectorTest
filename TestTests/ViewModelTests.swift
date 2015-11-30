@@ -368,22 +368,171 @@ class ViewModelValueStorageTests: XCTestCase {
         XCTAssertEqual(timezoneSectionDesc.selectionState, SectionSelection.Selected )
         XCTAssertEqual(viewModel.timeZone.value, expectedTimezone)
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
-        }
-    }
 }
 
 class ViewModelReactiveTests : XCTestCase {
     
+    func testResponseModelIsAccurate() {
+        
+        let startDate = NSDate()
+        let endDate = NSDate(timeInterval: 3600, sinceDate: startDate)
+        let timezone = NSTimeZone.localTimeZone()
+        let allDay = false
+        
+        let rModel = ResponseModel(startDate: startDate, endDate: endDate, timezone: timezone, allDay: allDay)
+        
+        let viewModel = RxViewModel(data:rModel)
+        
+        let responseModel = viewModel.response
+        
+        XCTAssertEqual(responseModel.startDate, startDate)
+        XCTAssertEqual(responseModel.endDate, endDate)
+        XCTAssertEqual(responseModel.timezone, timezone)
+        XCTAssertEqual(responseModel.allDay, allDay)
+    }
     
-    func testDataShouldNotChangeAllTheTime() {
+    func testPassNilToDateComparer() {
         
+        let startDate = NSDate()
+        let result = dateComparer(startDate, rhs: nil)
         
+        XCTAssertTrue(result)
+    }
+    
+    func testGetStringObservableForRowType() {
         
+        let startDate       = NSDate()
+        let endDate:NSDate? = nil
+        let allDay          = false
+
+        let rModel  = ResponseModel(startDate: startDate, endDate: endDate, timezone: NSTimeZone.localTimeZone(), allDay: allDay)
+        let viewModel = RxViewModel(data: rModel)
+
+        var startDayStringValue:String? = nil
+        var endDayStringValue:String? = nil
+        var allDayStringValue:String? = nil
+        var timeZoneStrValue:String? = nil
+        
+        let startDateStringObs = viewModel.getStringObservableForRowType(.StartDate)
+            .subscribeNext { (strValue) -> Void in
+                startDayStringValue = strValue
+        }
+        let endDateStringObs = viewModel.getStringObservableForRowType(.EndDate)
+            .subscribeNext { (strValue) -> Void in
+                endDayStringValue = strValue
+        }
+        let allDayStringObs  = viewModel.getStringObservableForRowType(.AllDay)
+            .subscribeNext { (strValue) -> Void in
+                allDayStringValue = strValue
+        }
+        let timezoneStringObs = viewModel.getStringObservableForRowType(.TimeZone)
+            .subscribeNext { (strValue) -> Void in
+                timeZoneStrValue = strValue
+        }
+        defer {
+            startDateStringObs.dispose()
+            endDateStringObs.dispose()
+            allDayStringObs.dispose()
+            timezoneStringObs.dispose()
+        }
+        
+        XCTAssertNotNil(startDateStringObs)
+        XCTAssertNotNil(endDateStringObs)
+        XCTAssertNotNil(allDayStringObs)
+        XCTAssertNotNil(timezoneStringObs)
+    }
+}
+
+class ViewModelRelatedTypesTests : XCTestCase {
+    
+    func testSectionTypeInvalidValuesAreHandled() {
+        
+        for value in 0...3 {
+            let type = try? SectionType.fromInt(value)
+            XCTAssertNotNil(type?.toTitleString())
+            XCTAssertNotNil(type?.toInt())
+        }
+        
+        guard let _ = try? SectionType.fromInt(4) else {
+            XCTAssertTrue(true); return;
+        }
+        XCTFail("Invalid value was not handled.")
+    }
+    
+    func testTimeZoneLabelNotFoundIsHandled() {
+        
+        do {
+
+            let current = NSTimeZone.localTimeZone()
+            let zones:[String:NSTimeZone?] = ["Foo" : NSTimeZone(name: "America/Chicago")]
+            try current.getLabelWithZones(zones)
+            
+            XCTFail("Error TimeZonePickerErrors.NotFound should had been dispatched.")
+        }
+        catch TimeZonePickerErrors.NotFound(let message) {
+            XCTAssertNotNil(message)
+        }
+        catch {
+            XCTFail("This failure is unexpected")
+        }
+    }
+    
+    func testInvalidTimeZoneNameIsHandled() {
+        
+        do {
+            let current                    = NSTimeZone.localTimeZone()
+            let incorrectName              = "America / Chicago"
+            let zones:[String:NSTimeZone?] = ["Central Time (US & Canada)" : NSTimeZone(name:incorrectName)]
+            try current.getLabelWithZones(zones)
+            
+            XCTFail("Error TimeZonePickerErrors.InvalidTimeZoneName should had been dispatched.")
+        }
+        catch TimeZonePickerErrors.InvalidTimeZoneName(let message) {
+           XCTAssertNotNil(message)
+        }
+        catch {
+            XCTFail("This failure is unexpected")
+        }
+    }
+    
+    func testRetrieveTimeZoneByLabel() {
+        
+        for label:String in Array(TimeZoneConstants.managedTimeZones.keys) {
+            
+            do {
+                let timezone = try NSTimeZone.getTimezoneFromLabel( label )
+                XCTAssertNotNil(timezone)
+            } catch TimeZonePickerErrors.NotFound(let message) {
+                XCTFail("This failure is unexpected: \(message)")
+            } catch {
+               XCTFail("This failure is unexpected")
+            }
+        }
+    }
+    
+    func testRetrieveTimeZoneByLabelHandlesWrongLabel() {
+        
+        do {
+            try NSTimeZone.getTimezoneFromLabel( "This_Value_Is_Wrong" )
+            
+            XCTFail("Error TimeZonePickerErrors.NotFound should had been dispatched.")
+            
+        } catch TimeZonePickerErrors.NotFound(let message) {
+            XCTAssertNotNil(message)
+        } catch {
+            XCTFail("This failure is unexpected")
+        }
+    }
+    
+    
+    
+    func testPlusOperatorOverloadForDictionaryIsValid() {
+        
+        let result = TimeZoneConstants.managedTimeZones + ["Foo" : NSTimeZone(name: "")]
+        let managedTimeZoneCount = Array( TimeZoneConstants.managedTimeZones.keys ).count
+        
+        XCTAssertNotNil(result)
+        XCTAssertEqual(Array(result.keys).count, managedTimeZoneCount + 1)
     }
     
 }

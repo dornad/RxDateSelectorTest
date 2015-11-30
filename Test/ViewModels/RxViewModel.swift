@@ -168,7 +168,7 @@ extension RxViewModel {
 
         if type.isDateType() {
             
-            // dates will use the dataFormatter property.
+            // dates will use the dateFormatter property.
             let source = (type == .StartDate ? self.startDate.rxVariable : self.endDate.rxVariable)
 
             return source.map({ date -> String in
@@ -177,13 +177,14 @@ extension RxViewModel {
                 }
                 return self.dateFormatter.stringFromDate(date)
             })
-        }
-        else if type == .TimeZone {
+        } else if type == .TimeZone {
             return self.timeZone.rxVariable
-                .map { $0.getLabel() }
+                .map({ (timezone) -> String in
+                    let label = try? timezone.getLabel()                    
+                    return label ?? ""
+                })
                 .asObservable()
-        }
-        else {
+        } else {
             return Variable( "" ).asObservable()
         }
     }
