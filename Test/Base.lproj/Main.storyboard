@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
     </dependencies>
     <scenes>
-        <!--RxSwift Version-->
+        <!--Event Details Date Selector View Controller-->
         <scene sceneID="yNE-AU-s3g">
             <objects>
-                <viewController id="FgN-Fk-QKx" customClass="RxViewController" customModule="Test" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="FgN-Fk-QKx" customClass="EventDetailsDateSelectorViewController" customModule="Test" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dRQ-mo-fZB"/>
                         <viewControllerLayoutGuide type="bottom" id="4nV-Ni-ceG"/>
@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="RxSwift Version" id="Adq-yL-E6f"/>
+                    <tabBarItem key="tabBarItem" title="" id="Adq-yL-E6f"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GhY-yp-GIc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
