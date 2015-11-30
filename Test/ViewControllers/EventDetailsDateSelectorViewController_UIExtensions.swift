@@ -116,7 +116,7 @@ extension EventDetailsDateSelectorViewController {
      */
     func lineSeparator(withSuperview sv:UIView) {
         let separator = UIView()
-        separator.backgroundColor = UIColor(red: 0.557, green: 0.557, blue: 0.576, alpha: 1)
+        separator.backgroundColor = UIColor(red:0.87, green:0.87, blue:0.87, alpha:1.0)
         sv.addSubview(separator)
         
         separator.snp_makeConstraints{ (make) -> Void in
@@ -124,7 +124,7 @@ extension EventDetailsDateSelectorViewController {
                 .right
                 .bottom
                 .equalTo(separator.superview!)
-            make.height.equalTo(0.8)
+            make.height.equalTo(0.5)
         }
     }
     
