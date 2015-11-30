@@ -27,7 +27,7 @@ class ViewModelSelectionTests: XCTestCase {
             (.AllDay,     .Present, .NotSelected)
         ]
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         
         var latestValueFromRow: [SectionDesc]? = nil
         
@@ -52,7 +52,7 @@ class ViewModelSelectionTests: XCTestCase {
             (.AllDay,     .Present, .NotSelected)
         ]
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         
         var latestValueFromRow: [SectionDesc]? = nil
         
@@ -82,7 +82,7 @@ class ViewModelSelectionTests: XCTestCase {
             (.AllDay,     .Present, .NotSelected)
         ]
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         
         var latestValueFromRow: [SectionDesc]? = nil
         
@@ -111,7 +111,7 @@ class ViewModelSelectionTests: XCTestCase {
             (.AllDay,     .Present, .NotSelected)
         ]
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         var latestValueFromRow: [SectionDesc]? = nil
         let d = viewModel.rows
             .asObservable()
@@ -130,7 +130,7 @@ class ViewModelSelectionTests: XCTestCase {
     
     func testSelectionsAreExclusive() {
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         
         var latestValueFromRow: [SectionDesc]? = nil
         
@@ -199,7 +199,7 @@ class ViewModelValueStorageTests: XCTestCase {
 
     func testInitialDateValueIsStored() {
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         
         var latestValueFromRow: [SectionDesc]? = nil
         let d = viewModel.rows
@@ -226,7 +226,7 @@ class ViewModelValueStorageTests: XCTestCase {
     
     func testEndDateValueIsStored() {
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         
         var latestValueFromRow: [SectionDesc]? = nil
         
@@ -254,7 +254,7 @@ class ViewModelValueStorageTests: XCTestCase {
     
     func testAllDayValueIsStored() {
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         
         var latestValueFromRow: [SectionDesc]? = nil
         
@@ -281,7 +281,7 @@ class ViewModelValueStorageTests: XCTestCase {
     
     func testTransitionBetweenDateEditionIsCorrect() {
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         var latestValueFromRow: [SectionDesc]? = nil
         let d = viewModel.rows
             .asObservable()
@@ -338,7 +338,7 @@ class ViewModelValueStorageTests: XCTestCase {
     
     func testTimeZoneValueCanBeChanged() {
         
-        let viewModel = RxViewModel()
+        let viewModel = EventDetailsDateSelectorViewModel()
         var latestValueFromRow: [SectionDesc]? = nil
         let d = viewModel.rows
             .asObservable()
@@ -381,7 +381,7 @@ class ViewModelReactiveTests : XCTestCase {
         
         let rModel = ResponseModel(startDate: startDate, endDate: endDate, timezone: timezone, allDay: allDay)
         
-        let viewModel = RxViewModel(data:rModel)
+        let viewModel = EventDetailsDateSelectorViewModel(data:rModel)
         
         let responseModel = viewModel.response
         
@@ -406,7 +406,7 @@ class ViewModelReactiveTests : XCTestCase {
         let allDay          = false
 
         let rModel  = ResponseModel(startDate: startDate, endDate: endDate, timezone: NSTimeZone.localTimeZone(), allDay: allDay)
-        let viewModel = RxViewModel(data: rModel)
+        let viewModel = EventDetailsDateSelectorViewModel(data: rModel)
 
         var startDayStringValue:String? = nil
         var endDayStringValue:String? = nil
