@@ -226,6 +226,7 @@ extension EventDetailsDateSelectorViewController {
             
             button.rx_tap
                 .subscribeNext { [weak self] () -> Void in
+                    self?.viewModel.endDate.value = nil
                     self?.viewModel.selectedRowType.value = .StartDate
                 }
                 .addDisposableTo(disposeBag)
