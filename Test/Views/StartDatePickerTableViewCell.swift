@@ -23,7 +23,7 @@ protocol PickerCellType {
      - parameter viewModel:   The ViewModel attached to the ViewController that owns the table view for this cell.
      - parameter disposeBag:  (Rx) memory management dispose bag.
      */
-    func setup(sectionDesc: SectionDesc, viewModel:RxViewModel, disposeBag: DisposeBag)    
+    func setup(sectionDesc: SectionDesc, viewModel:EventDetailsDateSelectorViewModel, disposeBag: DisposeBag)
 }
 
 /// A Cell that displays a date picker for the start date of an event
@@ -49,7 +49,7 @@ public class StartDatePickerTableViewCell : UITableViewCell, PickerCellType {
      - parameter viewModel:   Current ViewModel
      - parameter disposeBag:  (Rx) memory management dispose bag.
      */
-    internal func setup(sectionDesc: SectionDesc, viewModel:RxViewModel, disposeBag: DisposeBag) {
+    internal func setup(sectionDesc: SectionDesc, viewModel:EventDetailsDateSelectorViewModel, disposeBag: DisposeBag) {
         
         self.picker.removeFromSuperview()
         self.contentView.addSubview(self.picker)

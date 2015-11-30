@@ -40,7 +40,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 
+// MARK: Custom Fonts
+
+extension UIFont {
+    
+    public static func helveticaNeueLightFontWithSize(size:CGFloat) -> UIFont {
+        return UIFont(name: "HelveticaNeue-Light", size: size) ?? UIFont.systemFontOfSize(size)
+    }
+    
+    public static func helveticaNeueMediumFontWithSize(size:CGFloat) -> UIFont {
+        return UIFont(name: "HelveticaNeue-Medium", size: size) ?? UIFont.systemFontOfSize(size)
+    }
+}

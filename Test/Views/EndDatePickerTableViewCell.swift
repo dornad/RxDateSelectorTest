@@ -21,7 +21,7 @@ public class EndDatePickerTableViewCell : StartDatePickerTableViewCell {
      - parameter viewModel:   The ViewModel attached to the ViewController that owns the table view for this cell.
      - parameter disposeBag:  (Rx) memory management dispose bag.
      */
-    override func setup(sectionDesc: SectionDesc, viewModel: RxViewModel, disposeBag: DisposeBag) {
+    override func setup(sectionDesc: SectionDesc, viewModel: EventDetailsDateSelectorViewModel, disposeBag: DisposeBag) {
 
         self.picker.removeFromSuperview()
         self.contentView.addSubview(self.picker)

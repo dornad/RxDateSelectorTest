@@ -14,7 +14,7 @@ import SnapKit
 
 // MARK: Constants, Header, Footer and Cell Setup
 
-extension RxViewController {
+extension EventDetailsDateSelectorViewController {
     
     /**
      *  Constants for SnapKit.
@@ -89,7 +89,7 @@ extension RxViewController {
 
 // MARK: UIControl build functions (reusable)
 
-extension RxViewController {
+extension EventDetailsDateSelectorViewController {
     
     /**
      Util function that adds a label to a UIView.  Used in the table header.
@@ -276,7 +276,7 @@ extension RxViewController {
 
 // MARK: Interactivity
 
-extension RxViewController {
+extension EventDetailsDateSelectorViewController {
     
     /**
      Adds a gesture recognizer to a header view.

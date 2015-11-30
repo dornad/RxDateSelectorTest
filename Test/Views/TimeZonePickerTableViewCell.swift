@@ -15,7 +15,7 @@ import SnapKit
 class PickerViewTableViewCell : UITableViewCell, PickerCellType {
     
     var picker:UIPickerView
-    var viewModel:RxViewModel?
+    var viewModel:EventDetailsDateSelectorViewModel?
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         self.picker = UIPickerView()
@@ -34,7 +34,7 @@ class PickerViewTableViewCell : UITableViewCell, PickerCellType {
      - parameter viewModel:   Current ViewModel
      - parameter disposeBag:  (Rx) memory management dispose bag.
      */
-    func setup(sectionDesc: SectionDesc, viewModel:RxViewModel, disposeBag:DisposeBag) {
+    func setup(sectionDesc: SectionDesc, viewModel:EventDetailsDateSelectorViewModel, disposeBag:DisposeBag) {
         
         self.viewModel = viewModel
         self.contentView.addSubview(self.picker)

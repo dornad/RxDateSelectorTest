@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 import SnapKit
 
-public class RxViewController : UIViewController {
+public class EventDetailsDateSelectorViewController : UIViewController {
     
     /// The tableview.
     var tableView:UITableView!
@@ -30,7 +30,7 @@ public class RxViewController : UIViewController {
     var dataSource: RxTableViewReactiveSectionModelArrayDataSourceSequenceWrapper<[SectionDesc]>!
     
     /// Our ViewModel, initialized with its default values
-    var viewModel:RxViewModel = RxViewModel()
+    var viewModel:EventDetailsDateSelectorViewModel = EventDetailsDateSelectorViewModel()
     
     /**
      Initializer for Playground testing.
@@ -40,7 +40,7 @@ public class RxViewController : UIViewController {
      
      - returns: An instance of this
      */
-    public init(viewModel:RxViewModel, playgroundFrame:CGRect?) {
+    public init(viewModel:EventDetailsDateSelectorViewModel, playgroundFrame:CGRect?) {
         super.init(nibName: nil, bundle: nil)
         self.playgroundFrame = playgroundFrame
     }
@@ -52,7 +52,7 @@ public class RxViewController : UIViewController {
 
 // MARK: View Controller LifeCycle
 
-extension RxViewController {
+extension EventDetailsDateSelectorViewController {
 
     override public func viewDidLoad() {
         
@@ -62,7 +62,7 @@ extension RxViewController {
             self.view.frame = fr
         }
         
-        self.viewModel = RxViewModel()
+        self.viewModel = EventDetailsDateSelectorViewModel()
         
         self.tableView = UITableView(frame: self.view!.frame, style: .Grouped)
         self.view?.addSubview(tableView)
@@ -126,7 +126,7 @@ extension RxViewController {
 
 // MARK: - UITableViewDelegate methods
 
-extension RxViewController : UITableViewDelegate {
+extension EventDetailsDateSelectorViewController : UITableViewDelegate {
     
     public func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UIConstants.sectionHeaderHeight

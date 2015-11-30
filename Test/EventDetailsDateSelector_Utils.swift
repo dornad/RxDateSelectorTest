@@ -83,19 +83,6 @@ public struct ValueHolder<T> {
     }
 }
 
-// MARK: Custom Fonts
-
-extension UIFont {
-    
-    public static func helveticaNeueLightFontWithSize(size:CGFloat) -> UIFont {
-        return UIFont(name: "HelveticaNeue-Light", size: size) ?? UIFont.systemFontOfSize(size)
-    }
-    
-    public static func helveticaNeueMediumFontWithSize(size:CGFloat) -> UIFont {
-        return UIFont(name: "HelveticaNeue-Medium", size: size) ?? UIFont.systemFontOfSize(size)
-    }
-}
-
 // MARK: SectionType
 
 public enum SectionTypeErrorType : ErrorType {

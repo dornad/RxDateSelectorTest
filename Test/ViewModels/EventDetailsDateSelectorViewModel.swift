@@ -49,7 +49,7 @@ internal func timeZoneComparer( lhs:NSTimeZone, rhs:NSTimeZone ) -> Bool {
 
 // MARK: ViewModel - Properties, transformers and initializers
 
-public class RxViewModel {
+public class EventDetailsDateSelectorViewModel {
     
     // Properties
     
@@ -100,7 +100,7 @@ public class RxViewModel {
 
 // MARK: ViewModel - Reactive methods and properties
 
-extension RxViewModel {
+extension EventDetailsDateSelectorViewModel {
     
     /**
     The reactive source of data.
