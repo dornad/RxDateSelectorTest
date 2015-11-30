@@ -101,7 +101,7 @@ extension EventDetailsDateSelectorViewController {
         let label: UILabel = UILabel(frame: CGRectZero)
         label.font = UIFont.helveticaNeueLightFontWithSize(20)
         label.textColor = UIColor(red:0.20, green:0.20, blue:0.20, alpha:1.0)
-        label.text = NSLocalizedString("(Rx) Event Date & Time", comment: "Title of Date/Time picker")
+        label.text = NSLocalizedString("Event Date & Time", comment: "Title of Date/Time picker")
         sv.addSubview(label)
         
         label.snp_makeConstraints{ (make) -> Void in
