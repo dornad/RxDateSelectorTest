@@ -142,7 +142,9 @@ extension EventDetailsDateSelectorViewController {
         
         button.rx_tap
             .subscribeNext { [weak self]() -> Void in
+                
                 print("Response: \(self?.viewModel.response)")
+                self?.dismissViewControllerAnimated(true, completion: nil)
             }
             .addDisposableTo(self.disposeBag)
         

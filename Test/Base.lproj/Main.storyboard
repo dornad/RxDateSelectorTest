@@ -45,7 +45,7 @@
                                 <state key="normal" title="START"/>
                                 <connections>
                                     <segue destination="FgN-Fk-QKx" kind="popoverPresentation" popoverAnchorView="BOS-Dc-woX" id="MQT-38-vFG">
-                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES"/>
                                     </segue>
                                 </connections>
                             </button>
