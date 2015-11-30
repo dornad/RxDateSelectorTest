@@ -368,6 +368,18 @@ class ViewModelValueStorageTests: XCTestCase {
         XCTAssertEqual(timezoneSectionDesc.selectionState, SectionSelection.Selected )
         XCTAssertEqual(viewModel.timeZone.value, expectedTimezone)
     }
+    
+    func testAllDayFormatsDatesCorrectly() {
+        
+        let startDate = NSDate()
+        let endDate = NSDate(timeInterval: 86400, sinceDate: startDate)
+        
+        var viewModel : Event = EventDetailsDateSelectorViewModel()
+        
+        
+        
+        
+    }
 }
 
 class ViewModelReactiveTests : XCTestCase {

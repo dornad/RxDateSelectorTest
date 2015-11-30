@@ -27,6 +27,10 @@ class PickerViewTableViewCell : UITableViewCell, PickerCellType {
         super.init(coder: aDecoder)
     }
     
+    func bindValueToDatePicker(viewModel: EventDetailsDateSelectorViewModel, disposeBag: DisposeBag) {
+        // NO-OP
+    }
+    
     /**
      Configure the Table View Cell
      

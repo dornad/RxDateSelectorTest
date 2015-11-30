@@ -20,7 +20,7 @@ public class EventDetailsDateSelectorViewController : UIViewController {
     var playgroundFrame:CGRect?
     
     /// Rx bag of wonders...
-    let disposeBag = DisposeBag()
+    let disposeBag:DisposeBag = DisposeBag()
     
     /**
      *  A variant of Rx's reactive UITableView datasource that can handle our ViewModel's models (type `SectionDesc`).
@@ -57,10 +57,6 @@ extension EventDetailsDateSelectorViewController {
     override public func viewDidLoad() {
         
         super.viewDidLoad()
-        
-        if let fr = self.playgroundFrame {
-            self.view.frame = fr
-        }
         
         self.viewModel = EventDetailsDateSelectorViewModel()
         

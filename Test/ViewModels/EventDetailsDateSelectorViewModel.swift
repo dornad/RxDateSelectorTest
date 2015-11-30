@@ -51,6 +51,11 @@ internal func timeZoneComparer( lhs:NSTimeZone, rhs:NSTimeZone ) -> Bool {
 
 public class EventDetailsDateSelectorViewModel {
     
+    struct Constants {
+        static let DateTimeFormat = "EEE, MMM d, yyyy h:mm a"
+        static let DateFormat     = "EEEE, MMMM d, yyyy"
+    }
+    
     // Properties
     
     public var startDate:ValueHolder<NSDate?>
@@ -82,7 +87,7 @@ public class EventDetailsDateSelectorViewModel {
     
     required public init(startDate:NSDate? = nil, endDate:NSDate? = nil, timeZone:NSTimeZone = NSTimeZone.localTimeZone(), allDay: Bool=false) {
         
-        self.dateFormatter.dateFormat = "EEE, MMM d, yyyy h:mm a"
+        self.dateFormatter.dateFormat = Constants.DateTimeFormat
         
         self.startDate          = ValueHolder(startDate,        callbackForValueSetting: dateComparer)
         self.endDate            = ValueHolder(endDate,          callbackForValueSetting: dateComparer)
@@ -175,6 +180,7 @@ extension EventDetailsDateSelectorViewModel {
                 guard let date = date else {
                     return ""
                 }
+                self.dateFormatter.dateFormat = self.allDay.value ? Constants.DateFormat : Constants.DateTimeFormat
                 return self.dateFormatter.stringFromDate(date)
             })
         } else if type == .TimeZone {
