@@ -232,7 +232,7 @@ extension EventDetailsDateSelectorViewController {
                 .addDisposableTo(disposeBag)
             
             button.snp_makeConstraints { (make) -> Void in
-                make.left.equalTo(label.snp_right).offset(5)
+                make.left.equalTo(label.snp_right).offset(12)
                 make.right.equalTo(sv).offset(-10)
                 make.centerY.equalTo(sv)
             }
