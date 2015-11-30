@@ -42,7 +42,7 @@ class PickerViewTableViewCell : UITableViewCell, PickerCellType {
         self.picker.dataSource = self
         
         // The next 4 lines do pre-selection of the timezone value from the viewModel.
-        let selectedLabel = viewModel.timeZone.value.getLabel()
+        let selectedLabel = (try? viewModel.timeZone.value.getLabel()) ?? ""
         let index = everyTimeZonePlusSeparators.indexOf(selectedLabel)
         if let index = index {
             self.picker.selectRow(index, inComponent: 0, animated: false)
