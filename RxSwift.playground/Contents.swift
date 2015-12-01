@@ -4,87 +4,102 @@ import UIKit
 import XCPlayground
 import SnapKit
 
-let managedTimeZones: [String : NSTimeZone?] = [
-    "Abu Dhabi":                    NSTimeZone(name:"Asia/Muscat"),
-    "Adelaide":                     NSTimeZone(name:"Australia/Adelaide"),
-    "Alaska":                       NSTimeZone(name:"America/Juneau"),
-    "Athens":                       NSTimeZone(name:"Europe/Athens"),
-    "Atlantic Time (Canada)":       NSTimeZone(name:"America/Halifax"),
-    "Auckland":                     NSTimeZone(name:"Pacific/Auckland"),
-    "Bangkok":                      NSTimeZone(name:"Asia/Bangkok"),
-    "Buenos Aires":                 NSTimeZone(name:"America/Argentina/Buenos_Aires"),
-    "Cape Verde Is.":               NSTimeZone(name:"Atlantic/Cape_Verde"),
-    "Caracas":                      NSTimeZone(name:"America/Caracas"),
-    "Central Time (US & Canada)":   NSTimeZone(name:"America/Chicago"),
-    "Dhaka":                        NSTimeZone(name:"Asia/Dhaka"),
-    "Eastern Time (US & Canada)":   NSTimeZone(name:"America/New_York"),
-    "Hawaii":                       NSTimeZone(name:"Pacific/Honolulu"),
-    "Hong Kong":                    NSTimeZone(name:"Asia/Hong_Kong"),
-    "Islamabad":                    NSTimeZone(name:"Asia/Karachi"),
-    "Kabul":                        NSTimeZone(name:"Asia/Kabul"),
-    "Kathmandu":                    NSTimeZone(name:"Asia/Kathmandu"),
-    "London":                       NSTimeZone(name:"Europe/London"),
-    "Mid-Atlantic":                 NSTimeZone(name:"Atlantic/South_Georgia"),
-    "Moscow":                       NSTimeZone(name:"Europe/Moscow"),
-    "Mountain Time (US & Canada)":  NSTimeZone(name:"America/Denver"),
-    "New Caledonia":                NSTimeZone(name:"Pacific/Noumea"),
-    "New Delhi":                    NSTimeZone(name:"Asia/Kolkata"),
-    "Newfoundland":                 NSTimeZone(name:"America/St_Johns"),
-    "Nuku'alofa":                   NSTimeZone(name:"Pacific/Tongatapu"),
-    "Pacific Time (US & Canada)":   NSTimeZone(name:"America/Los_Angeles"),
-    "Paris":                        NSTimeZone(name:"Europe/Paris"),
-    "Rangoon":                      NSTimeZone(name:"Asia/Rangoon"),
-    "Samoa":                        NSTimeZone(name:"Pacific/Apia"),
-    "Sydney":                       NSTimeZone(name:"Australia/Sydney"),
-    "Tehran":                       NSTimeZone(name:"Asia/Tehran"),
-    "Tokyo":                        NSTimeZone(name:"Asia/Tokyo")
-];
-
-let foo: NSTimeZone? = managedTimeZones["Alaska"]!
-
-enum TimeZonePickerErrors : ErrorType {
-    case NameInvalid
-    case NotFound(message:String)
+extension UIFont {
+    
+    public static func helveticaNeueLightFontWithSize(size:CGFloat) -> UIFont {
+        return UIFont(name: "HelveticaNeue-Light", size: size) ?? UIFont.systemFontOfSize(size)
+    }
+    
+    public static func helveticaNeueMediumFontWithSize(size:CGFloat) -> UIFont {
+        return UIFont(name: "HelveticaNeue-Medium", size: size) ?? UIFont.systemFontOfSize(size)
+    }
 }
 
-func getTimezoneFromLabel( label: String ) throws -> NSTimeZone
-{
-    for (timezoneName, timezone) in managedTimeZones {
+
+let picker = UISwitch()
+picker.on = true
+picker.onTintColor = UIColor(red:0.64, green:0.53, blue:0.25, alpha:1.0)
+
+let button = UIButton(frame: CGRectMake(0,0,140,80))
+button.backgroundColor = UIColor.blackColor()
+button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+button.titleLabel?.font = UIFont.helveticaNeueLightFontWithSize(12)
+
+// Using NSAttributedString to add a letter-spacing of 1.25 to the button label.
+let title = NSLocalizedString("SAVE", comment: "Title of Save button in Date/Time picker")
+let attributes = [NSFontAttributeName: UIFont.helveticaNeueMediumFontWithSize(12),
+    NSForegroundColorAttributeName: UIColor.whiteColor(),
+    NSKernAttributeName: CGFloat(1.25)]
+let attributedString = NSAttributedString(string: title, attributes: attributes)
+button.setAttributedTitle(attributedString, forState: .Normal)
+//button.setTitle("Foo", forState: UIControlState.Normal)
+
+//XCPlaygroundPage.currentPage.captureValue(button, withIdentifier: "Button")
+
+class Cell : UITableViewCell {
+    
+    struct Constants {
+        static let Identifier = "DatePicker"
+    }
+    
+    var datePicker : UIDatePicker = UIDatePicker()
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure() {
         
-        if timezoneName == label {
-            return timezone!
-        }
+        self.datePicker.removeFromSuperview()
+        self.datePicker.datePickerMode = .DateAndTime
+        self.datePicker.date = NSDate()
+        self.contentView.addSubview(self.datePicker)
+        
+        self.datePicker.snp_remakeConstraints(closure: { (make) -> Void in
+            make.width.equalTo(self.contentView)
+            make.height.equalTo(self.contentView)
+        })
+
+    }
+}
+
+class DataSource : NSObject, UITableViewDataSource {
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
     }
     
-    throw TimeZonePickerErrors.NotFound(message: "")
-}
-
-func getTimezoneLabel( tz : NSTimeZone ) throws -> String {
-    
-    for (timezoneLabel, timezone) in managedTimeZones {
-        if let timezone = timezone {
-            if timezone.name == tz.name {
-                return timezoneLabel
-            }
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier(Cell.Constants.Identifier) as? Cell
+        
+        if indexPath.row == 0 {
+            cell?.textLabel?.text = "Foo"
+//            cell?.configure()
         }
-        else {
-            throw TimeZonePickerErrors.NameInvalid
-        }
+        return cell!
     }
-    throw TimeZonePickerErrors.NotFound(message: "")
+
 }
 
-let current = NSTimeZone.localTimeZone()
+let dataSrc = DataSource()
+let tableView = UITableView(frame: CGRectMake(0,0,300,400), style: .Plain)
+tableView.registerClass(Cell.self, forCellReuseIdentifier: Cell.Constants.Identifier)
+tableView.dataSource = dataSrc
 
-do {
-    let label = try getTimezoneLabel(current)
-    let timeZone = try getTimezoneFromLabel(label)
-}
-catch TimeZonePickerErrors.NameInvalid {
-    print("The NSTimeZone stored inside managedTimeZones is not a valid NSTimeZone name.")
-}
-catch TimeZonePickerErrors.NotFound(let message) {
-    print("oh noes... here's the message: \(message)")
-}
+tableView.rowHeight = 214
+
+tableView.sectionFooterHeight = 1
+
+XCPlaygroundPage.currentPage.captureValue(tableView, withIdentifier: "Table")
+XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
+
+
+
+
 
 

@@ -369,17 +369,6 @@ class ViewModelValueStorageTests: XCTestCase {
         XCTAssertEqual(viewModel.timeZone.value, expectedTimezone)
     }
     
-    func testAllDayFormatsDatesCorrectly() {
-        
-        let startDate = NSDate()
-        let endDate = NSDate(timeInterval: 86400, sinceDate: startDate)
-        
-        var viewModel : Event = EventDetailsDateSelectorViewModel()
-        
-        
-        
-        
-    }
 }
 
 class ViewModelReactiveTests : XCTestCase {
@@ -470,83 +459,6 @@ class ViewModelRelatedTypesTests : XCTestCase {
         }
         XCTFail("Invalid value was not handled.")
     }
-    
-    func testTimeZoneLabelNotFoundIsHandled() {
-        
-        do {
-
-            let current = NSTimeZone.localTimeZone()
-            let zones:[String:NSTimeZone?] = ["Foo" : NSTimeZone(name: "America/Chicago")]
-            try current.getLabelWithZones(zones)
-            
-            XCTFail("Error TimeZonePickerErrors.NotFound should had been dispatched.")
-        }
-        catch TimeZonePickerErrors.NotFound(let message) {
-            XCTAssertNotNil(message)
-        }
-        catch {
-            XCTFail("This failure is unexpected")
-        }
-    }
-    
-    func testInvalidTimeZoneNameIsHandled() {
-        
-        do {
-            let current                    = NSTimeZone.localTimeZone()
-            let incorrectName              = "America / Chicago"
-            let zones:[String:NSTimeZone?] = ["Central Time (US & Canada)" : NSTimeZone(name:incorrectName)]
-            try current.getLabelWithZones(zones)
-            
-            XCTFail("Error TimeZonePickerErrors.InvalidTimeZoneName should had been dispatched.")
-        }
-        catch TimeZonePickerErrors.InvalidTimeZoneName(let message) {
-           XCTAssertNotNil(message)
-        }
-        catch {
-            XCTFail("This failure is unexpected")
-        }
-    }
-    
-    func testRetrieveTimeZoneByLabel() {
-        
-        for label:String in Array(TimeZoneConstants.managedTimeZones.keys) {
-            
-            do {
-                let timezone = try NSTimeZone.getTimezoneFromLabel( label )
-                XCTAssertNotNil(timezone)
-            } catch TimeZonePickerErrors.NotFound(let message) {
-                XCTFail("This failure is unexpected: \(message)")
-            } catch {
-               XCTFail("This failure is unexpected")
-            }
-        }
-    }
-    
-    func testRetrieveTimeZoneByLabelHandlesWrongLabel() {
-        
-        do {
-            try NSTimeZone.getTimezoneFromLabel( "This_Value_Is_Wrong" )
-            
-            XCTFail("Error TimeZonePickerErrors.NotFound should had been dispatched.")
-            
-        } catch TimeZonePickerErrors.NotFound(let message) {
-            XCTAssertNotNil(message)
-        } catch {
-            XCTFail("This failure is unexpected")
-        }
-    }
-    
-    
-    
-    func testPlusOperatorOverloadForDictionaryIsValid() {
-        
-        let result = TimeZoneConstants.managedTimeZones + ["Foo" : NSTimeZone(name: "")]
-        let managedTimeZoneCount = Array( TimeZoneConstants.managedTimeZones.keys ).count
-        
-        XCTAssertNotNil(result)
-        XCTAssertEqual(Array(result.keys).count, managedTimeZoneCount + 1)
-    }
-    
 }
 
 // MARK: - Equatable functions

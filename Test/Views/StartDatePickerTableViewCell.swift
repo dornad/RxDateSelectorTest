@@ -16,13 +16,6 @@ import SnapKit
  */
 protocol PickerCellType {
     
-    /**
-     Configure the cell.
-     
-     - parameter sectionDesc: Data or Descriptor of the section the cell is a part of.
-     - parameter viewModel:   The ViewModel attached to the ViewController that owns the table view for this cell.
-     - parameter disposeBag:  (Rx) memory management dispose bag.
-     */
     func setup(sectionDesc: SectionDesc, viewModel:EventDetailsDateSelectorViewModel, disposeBag: DisposeBag)
     
     func bindValueToDatePicker(viewModel:EventDetailsDateSelectorViewModel, disposeBag:DisposeBag)
@@ -49,7 +42,7 @@ public class StartDatePickerTableViewCell : UITableViewCell, PickerCellType {
         // Note: At some point this was implemented via two-way binding (i.e.:  self.picker.rx_date <-> viewModel.startDate.rx_variable)
         // It was causing issues, thus had to step back to a one-way binding plus normal value assignment
         
-        if let startDate = viewModel.startDate.value {
+        if let startDate:NSDate = viewModel.startDate.value {
             self.picker.date = startDate
         }
     
@@ -71,6 +64,12 @@ public class StartDatePickerTableViewCell : UITableViewCell, PickerCellType {
         
         self.picker.removeFromSuperview()
         self.picker.datePickerMode = viewModel.allDay.value ? UIDatePickerMode.Date : UIDatePickerMode.DateAndTime
+        
+        if sectionDesc.type == .StartDate {
+            self.picker.layer.cornerRadius = 10
+            self.picker.layer.masksToBounds = true
+        }
+        
         self.contentView.addSubview(self.picker)
 
         bindValueToDatePicker(viewModel, disposeBag: disposeBag)

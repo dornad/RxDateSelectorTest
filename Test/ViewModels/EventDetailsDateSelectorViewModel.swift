@@ -185,14 +185,39 @@ extension EventDetailsDateSelectorViewModel {
             })
         } else if type == .TimeZone {
             return self.timeZone.rxVariable
-                .map({ (timezone) -> String in
-                    let label = try? timezone.getLabel()                    
-                    return label ?? ""
-                })
+                .map{ $0.getLabel() }
                 .asObservable()
         } else {
             return Variable( "" ).asObservable()
         }
+    }
+    
+    static var labelList:[String]?
+    
+    public func listOfTimezoneLabels(includeSeparators showSeparator:Bool) -> [String] {
+        
+        if EventDetailsDateSelectorViewModel.labelList == nil {
+            
+            var labels:[String] = []
+            
+            let america:[String] = TimeZoneConstants.AmericaTimeZones.allValues.map { $0.getTimeZoneLabel() }
+            let uk:[String]      = TimeZoneConstants.UnitedKingdomTimeZones.allValues.map { $0.getTimeZoneLabel() }
+            let others:[String]  = TimeZoneConstants.OtherTimeZones.allValues.map { $0.getTimeZoneLabel() }
+            
+            labels.appendContentsOf(america)
+            if showSeparator {
+                labels.append("-")
+            }
+            labels.appendContentsOf(uk)
+            if showSeparator {
+                labels.append("-")
+            }
+            labels.appendContentsOf(others)
+            
+            EventDetailsDateSelectorViewModel.labelList = labels
+        }
+        
+        return EventDetailsDateSelectorViewModel.labelList!
     }
 }
 

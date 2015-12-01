@@ -138,12 +138,15 @@ extension EventDetailsDateSelectorViewController {
         button.backgroundColor = UIColor.blackColor()
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         button.titleLabel?.font = UIFont.helveticaNeueMediumFontWithSize(12)
-        button.setTitle(NSLocalizedString("SAVE", comment: "Title of Save button in Date/Time picker"), forState: .Normal)
+        
+        // Using NSAttributedString to add a letter-spacing of 1.25 to the button label.
+        let title = NSLocalizedString("SAVE", comment: "Title of Save button in Date/Time picker")
+        let attributes = [NSFontAttributeName: UIFont.helveticaNeueMediumFontWithSize(12), NSKernAttributeName: CGFloat(1.25)]
+        let attributedString = NSAttributedString(string: title, attributes: attributes)
+        button.setAttributedTitle(attributedString, forState: .Normal)
         
         button.rx_tap
             .subscribeNext { [weak self]() -> Void in
-                
-                print("Response: \(self?.viewModel.response)")
                 self?.dismissViewControllerAnimated(true, completion: nil)
             }
             .addDisposableTo(self.disposeBag)
@@ -233,7 +236,7 @@ extension EventDetailsDateSelectorViewController {
             
             button.snp_makeConstraints { (make) -> Void in
                 make.left.equalTo(label.snp_right).offset(12)
-                make.right.equalTo(sv).offset(-10)
+                make.right.equalTo(sv).offset(-20)
                 make.centerY.equalTo(sv)
             }
         }
@@ -262,6 +265,7 @@ extension EventDetailsDateSelectorViewController {
         
         let allDaySwitch = UISwitch()
         allDaySwitch.on = self.viewModel.allDay.value
+        allDaySwitch.onTintColor = UIColor(red:0.64, green:0.53, blue:0.25, alpha:1.0)
         allDaySwitch.addTarget(self, action: Selector("onAllDaySwitchChange:"), forControlEvents: UIControlEvents.ValueChanged)
         sv.addSubview(allDaySwitch)
         return allDaySwitch
@@ -310,22 +314,7 @@ extension EventDetailsDateSelectorViewController {
     @objc func onTapInView(sender:UITapGestureRecognizer) {
         
         if sender.state == .Ended {
-            
-            tableView.beginUpdates()
-            
-            let previousSelection = self.viewModel.selectedRowType.value?.toInt()
-            let current = sender.sectionType.toInt()
-            
-            let indexSet:NSMutableIndexSet = NSMutableIndexSet(index: current)
-            if let previousSelection = previousSelection {
-                indexSet.addIndex(previousSelection)
-            }
-            
             self.viewModel.selectedRowType.value = sender.sectionType
-            tableView.reloadSections(indexSet, withRowAnimation: UITableViewRowAnimation.None)
-            
-            tableView.endUpdates()
-            
         }
     }
     

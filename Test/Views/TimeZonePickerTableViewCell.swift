@@ -11,21 +11,12 @@ import UIKit
 import RxSwift
 import SnapKit
 
+
 /// A Cell that displays a UIPickerView for picking TimeZones.
-class PickerViewTableViewCell : UITableViewCell, PickerCellType {
+class PickerViewTableViewCell : UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource, PickerCellType {
     
-    var picker:UIPickerView
+    var picker:UIPickerView = UIPickerView()
     var viewModel:EventDetailsDateSelectorViewModel?
-    
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        self.picker = UIPickerView()
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        self.picker = UIPickerView()
-        super.init(coder: aDecoder)
-    }
     
     func bindValueToDatePicker(viewModel: EventDetailsDateSelectorViewModel, disposeBag: DisposeBag) {
         // NO-OP
@@ -46,9 +37,8 @@ class PickerViewTableViewCell : UITableViewCell, PickerCellType {
         self.picker.dataSource = self
         
         // The next 4 lines do pre-selection of the timezone value from the viewModel.
-        let selectedLabel = (try? viewModel.timeZone.value.getLabel()) ?? ""
-        let index = everyTimeZonePlusSeparators.indexOf(selectedLabel)
-        if let index = index {
+        let selectedLabel = viewModel.timeZone.value.getLabel()
+        if let index = viewModel.listOfTimezoneLabels(includeSeparators: true).indexOf(selectedLabel) {
             self.picker.selectRow(index, inComponent: 0, animated: false)
         }
 
@@ -59,22 +49,12 @@ class PickerViewTableViewCell : UITableViewCell, PickerCellType {
                 .bottom.equalTo(self.contentView)
         }
     }
-}
-
-// MARK: UIPickerViewDelegate and UIPickerViewDataSource methods
-
-extension PickerViewTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
     
-    var separatorValue:String {
-        return "-"
-    }
-    
-    var everyTimeZonePlusSeparators: [String] {
-        return TimeZoneConstants.usaTimeZonesKeys
-            + [separatorValue]
-            + TimeZoneConstants.ukTimeZonesKeys
-            + [separatorValue]
-            + TimeZoneConstants.otherTimeZoneKeys
+    internal var labels:[String] {
+        guard let viewModel = self.viewModel else {
+            return []
+        }
+        return viewModel.listOfTimezoneLabels(includeSeparators: true)
     }
     
     internal func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
@@ -82,23 +62,23 @@ extension PickerViewTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
     }
     
     internal func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return everyTimeZonePlusSeparators.count
+        return self.labels.count
     }
     
     internal func pickerView(pickerView: UIPickerView,titleForRow row: Int,forComponent component: Int) -> String? {
-        return everyTimeZonePlusSeparators[row]
+        return self.labels[row]
     }
     
     internal func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 
-        let selectedName: String = everyTimeZonePlusSeparators[row]
+        let selectedLabel = self.labels[row]
         
-        guard let viewModel = self.viewModel where selectedName != separatorValue else {
-            // early return when don't have a view model, plus we must NOT be tapping on the separator
+        guard let viewModel = self.viewModel where selectedLabel != "-" else {
+            // early return when we tap on the separator
             return
         }
         
-        let timezone : NSTimeZone? = TimeZoneConstants.managedTimeZones[selectedName]!
+        let timezone:NSTimeZone? = TimeZoneUtils.NSTimeZoneFromLabel(selectedLabel)
         if let timezone = timezone {
             viewModel.timeZone.value = timezone
         }

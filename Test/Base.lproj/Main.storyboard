@@ -38,7 +38,7 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BOS-Dc-woX">
                                 <rect key="frame" x="220" y="285" width="161" height="30"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="161" id="kfg-p7-coQ"/>
                                 </constraints>
@@ -50,7 +50,7 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="BOS-Dc-woX" firstAttribute="centerY" secondItem="fs4-Kz-Lxr" secondAttribute="centerY" id="WRR-eT-x6s"/>
                             <constraint firstItem="BOS-Dc-woX" firstAttribute="centerX" secondItem="fs4-Kz-Lxr" secondAttribute="centerX" constant="0.5" id="qEk-Gv-u2d"/>

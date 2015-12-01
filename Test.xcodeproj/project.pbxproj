@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C17F9EE1C0E0E7B006E353D /* TimeZoneUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C17F9ED1C0E0E7B006E353D /* TimeZoneUtils.swift */; };
+		5C17F9F01C0E431A006E353D /* TimeZoneConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C17F9EF1C0E431A006E353D /* TimeZoneConstants.swift */; };
 		5C2CA4341BF234560081235C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2CA4331BF234560081235C /* AppDelegate.swift */; };
 		5C2CA4361BF234560081235C /* EventDetailsDateSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2CA4351BF234560081235C /* EventDetailsDateSelectorViewController.swift */; };
 		5C2CA4391BF234560081235C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C2CA4371BF234560081235C /* Main.storyboard */; };
@@ -39,6 +41,8 @@
 
 /* Begin PBXFileReference section */
 		1B099B87994F464739DCA24E /* Pods-Test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test.release.xcconfig"; path = "Pods/Target Support Files/Pods-Test/Pods-Test.release.xcconfig"; sourceTree = "<group>"; };
+		5C17F9ED1C0E0E7B006E353D /* TimeZoneUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeZoneUtils.swift; path = Utils/TimeZoneUtils.swift; sourceTree = "<group>"; };
+		5C17F9EF1C0E431A006E353D /* TimeZoneConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeZoneConstants.swift; path = Utils/TimeZoneConstants.swift; sourceTree = "<group>"; };
 		5C2CA4301BF234560081235C /* Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C2CA4331BF234560081235C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5C2CA4351BF234560081235C /* EventDetailsDateSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsDateSelectorViewController.swift; sourceTree = "<group>"; };
@@ -81,6 +85,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C17F9EC1C0E0E63006E353D /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				5C17F9ED1C0E0E7B006E353D /* TimeZoneUtils.swift */,
+				5C17F9EF1C0E431A006E353D /* TimeZoneConstants.swift */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		5C2CA4271BF234560081235C = {
 			isa = PBXGroup;
 			children = (
@@ -105,6 +118,7 @@
 		5C2CA4321BF234560081235C /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				5C17F9EC1C0E0E63006E353D /* Utils */,
 				5CC848D61C03824B00BD9407 /* ViewControllers */,
 				5CC848D51C03824300BD9407 /* ViewModels */,
 				5CA77A5A1BF548A10035F065 /* Views */,
@@ -351,6 +365,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CE283491BF500AC00A0DB22 /* EventDetailsDateSelectorViewController_UIExtensions.swift in Sources */,
+				5C17F9EE1C0E0E7B006E353D /* TimeZoneUtils.swift in Sources */,
 				5CC848DB1C04B47300BD9407 /* EndDatePickerTableViewCell.swift in Sources */,
 				5CC848DC1C04B47300BD9407 /* StartDatePickerTableViewCell.swift in Sources */,
 				5CA77A631BF54F020035F065 /* (null) in Sources */,
@@ -361,6 +376,7 @@
 				5C2CA4341BF234560081235C /* AppDelegate.swift in Sources */,
 				5CA77A611BF54F020035F065 /* (null) in Sources */,
 				5CA77A5C1BF5494D0035F065 /* EventDetailsDateSelector_Utils.swift in Sources */,
+				5C17F9F01C0E431A006E353D /* TimeZoneConstants.swift in Sources */,
 				5CA77A621BF54F020035F065 /* (null) in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
