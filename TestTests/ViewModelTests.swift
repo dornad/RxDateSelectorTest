@@ -43,11 +43,12 @@ class ViewModelSelectionTests: XCTestCase {
                 
         XCTAssertTrue(expected == latestValueFromRow!, "values do not match. actual: \(print(latestValueFromRow!)), expected:\(print(expected))")
     }
+    
     func testEndDateCanBeSelected() {
         
         let expected:[SectionDesc] = [
             (.StartDate,  .Present, .NotSelected),
-            (.EndDate,    .Missing, .Selected),
+            (.EndDate,    .Present, .Selected),
             (.TimeZone,   .Present, .NotSelected),
             (.AllDay,     .Present, .NotSelected)
         ]
@@ -64,7 +65,7 @@ class ViewModelSelectionTests: XCTestCase {
                 print("EXIT subscribeNext")
         }
         
-        viewModel.selectedRowType.value = .EndDate
+        viewModel.selectedRowType = .EndDate
         
         defer {
             d.dispose()
@@ -92,7 +93,7 @@ class ViewModelSelectionTests: XCTestCase {
                 latestValueFromRow = rows
         }
         
-        viewModel.selectedRowType.value = .TimeZone
+        viewModel.selectedRowType = .TimeZone
         
         defer {
             d.dispose()
@@ -119,7 +120,7 @@ class ViewModelSelectionTests: XCTestCase {
                 latestValueFromRow = rows
         }
         
-        viewModel.selectedRowType.value = .AllDay
+        viewModel.selectedRowType = .AllDay
         
         defer {
             d.dispose()
@@ -140,10 +141,10 @@ class ViewModelSelectionTests: XCTestCase {
                 latestValueFromRow = rows
         }
         
-        viewModel.selectedRowType.value = .StartDate
-        viewModel.selectedRowType.value = .EndDate
-        viewModel.selectedRowType.value = .TimeZone
-        viewModel.selectedRowType.value = .AllDay
+        viewModel.selectedRowType = .StartDate
+        viewModel.selectedRowType = .EndDate
+        viewModel.selectedRowType = .TimeZone
+        viewModel.selectedRowType = .AllDay
         
         defer {
             d.dispose()
@@ -213,7 +214,7 @@ class ViewModelValueStorageTests: XCTestCase {
         
         let newDate = NSDate(timeIntervalSinceNow: 120)  // two minutes later should work
         
-        viewModel.selectedRowType.value = .StartDate
+        viewModel.selectedRowType = .StartDate
         viewModel.startDate.value = newDate
         
         let currentSectionDesc = latestValueFromRow![SectionType.StartDate.toInt()]
@@ -242,7 +243,7 @@ class ViewModelValueStorageTests: XCTestCase {
         
         let date = NSDate(timeIntervalSinceNow: 1000000)
         
-        viewModel.selectedRowType.value = .EndDate
+        viewModel.selectedRowType = .EndDate
         viewModel.endDate.value = date
         
         let endDate = latestValueFromRow![SectionType.EndDate.toInt()]
@@ -297,7 +298,7 @@ class ViewModelValueStorageTests: XCTestCase {
         
         // Set the start Date
         
-        viewModel.selectedRowType.value = .StartDate
+        viewModel.selectedRowType = .StartDate
         viewModel.startDate.value = startDate
         
         // Check values when setting start date
@@ -317,7 +318,7 @@ class ViewModelValueStorageTests: XCTestCase {
         
         // Set the end Date
 
-        viewModel.selectedRowType.value = .EndDate
+        viewModel.selectedRowType = .EndDate
         viewModel.endDate.value = endDate
 
         // Check values after setting end date
@@ -334,6 +335,29 @@ class ViewModelValueStorageTests: XCTestCase {
         
         XCTAssertNotNil(viewModel.startDate.value)
         XCTAssertNotNil(viewModel.endDate.value)
+    }
+    
+    func testInitialEndDateIsAutomaticallySetTo3HoursLater() {
+        
+        let ThreeHoursLater:NSTimeInterval = 10800
+        
+        // ViewModel
+        let viewModel = EventDetailsDateSelectorViewModel()
+        
+        // Check that we got a start date.
+        guard let startDate: NSDate = viewModel.startDate.value else {
+            XCTFail("Start Date should not be nil"); return
+        }
+        XCTAssertNotNil(startDate)
+        
+        // Simulate tapping on the end date
+        viewModel.selectedRowType = .EndDate
+        
+        // Check that the got an end date, with a value of 3 hours after start date.
+        guard let endDate: NSDate = viewModel.endDate.value else {
+            XCTFail("EndDate should not be nil"); return
+        }
+        XCTAssertEqual(endDate.timeIntervalSinceDate(startDate), ThreeHoursLater)
     }
     
     func testTimeZoneValueCanBeChanged() {
@@ -358,7 +382,7 @@ class ViewModelValueStorageTests: XCTestCase {
         XCTAssertNotNil(expectedTimezone, "TimeZone should had been initialized from its knownTimeZoneName")
         XCTAssertEqual(expectedTimezone?.name, randTimezoneName, "TimeZone names should match")
         
-        viewModel.selectedRowType.value = .TimeZone
+        viewModel.selectedRowType = .TimeZone
         viewModel.timeZone.value = expectedTimezone!
         
         // Check the data coming out from the Rx pipe

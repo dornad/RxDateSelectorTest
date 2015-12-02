@@ -54,6 +54,7 @@ public class EventDetailsDateSelectorViewModel {
     struct Constants {
         static let DateTimeFormat = "EEE, MMM d, yyyy h:mm a"
         static let DateFormat     = "EEEE, MMMM d, yyyy"
+        static let ThreeHoursLater:NSTimeInterval = 10800.0
     }
     
     // Properties
@@ -63,7 +64,23 @@ public class EventDetailsDateSelectorViewModel {
     public var timeZone:ValueHolder<NSTimeZone>
     public var allDay:Variable<Bool>
     
-    public var selectedRowType:ValueHolder<SectionType?>
+    // Selected Row
+    
+    private var selectedRowTypeHolder:ValueHolder<SectionType?>
+    
+    public var selectedRowType:SectionType? {
+        get {
+            return self.selectedRowTypeHolder.value
+        }
+        set(newValue){
+            if newValue == .EndDate {
+                if self.startDate.value != nil && self.endDate.value == nil {
+                    self.endDate.value = NSDate(timeInterval: Constants.ThreeHoursLater, sinceDate: self.startDate.value!)
+                }
+            }
+            self.selectedRowTypeHolder.value = newValue
+        }
+    }
     
     // Response Model
     
@@ -95,9 +112,9 @@ public class EventDetailsDateSelectorViewModel {
         self.allDay             = Variable(allDay)
         
         // Handle Preselection.
-        let preselection:SectionType? = startDate == nil && endDate == nil ? .StartDate : nil
-        self.selectedRowType = ValueHolder(preselection, callbackForValueSetting: { return $1 != .AllDay })
-        if preselection != nil {
+        let preselectedRow:SectionType? = startDate == nil && endDate == nil ? .StartDate : nil
+        self.selectedRowTypeHolder = ValueHolder(preselectedRow, callbackForValueSetting: { $1 != .AllDay })
+        if preselectedRow != nil {
             self.startDate.value = NSDate()
         }
     }
@@ -119,7 +136,7 @@ extension EventDetailsDateSelectorViewModel {
         return self.combineSources()
             .map { (rows) -> [SectionDesc] in
                 
-                if let selected:SectionType = self.selectedRowType.value {
+                if let selected:SectionType = self.selectedRowType {
                     
                     var mutableRows = rows
                     let index = selected.toInt()
@@ -145,7 +162,7 @@ extension EventDetailsDateSelectorViewModel {
             self.endDate.rxVariable,
             self.timeZone.rxVariable,
             self.allDay,
-            self.selectedRowType.rxVariable) { (v1, v2, _, _, _) -> [SectionDesc] in
+            self.selectedRowTypeHolder.rxVariable) { (v1, v2, _, _, _) -> [SectionDesc] in
                 
                 let sDateState:SectionState = (v1 != nil) ? .Present : .Missing
                 let eDateState:SectionState = (v2 != nil) ? .Present : .Missing

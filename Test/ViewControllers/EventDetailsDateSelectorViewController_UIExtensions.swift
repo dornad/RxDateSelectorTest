@@ -230,7 +230,7 @@ extension EventDetailsDateSelectorViewController {
             button.rx_tap
                 .subscribeNext { [weak self] () -> Void in
                     self?.viewModel.endDate.value = nil
-                    self?.viewModel.selectedRowType.value = .StartDate
+                    self?.viewModel.selectedRowType = .StartDate
                 }
                 .addDisposableTo(disposeBag)
             
@@ -314,7 +314,7 @@ extension EventDetailsDateSelectorViewController {
     @objc func onTapInView(sender:UITapGestureRecognizer) {
         
         if sender.state == .Ended {
-            self.viewModel.selectedRowType.value = sender.sectionType
+            self.viewModel.selectedRowType = sender.sectionType
         }
     }
     
