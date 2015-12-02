@@ -208,9 +208,22 @@ extension EventDetailsDateSelectorViewModel {
             return Variable( "" ).asObservable()
         }
     }
+}
+
+// MARK: TimeZone related methods
+
+extension EventDetailsDateSelectorViewModel {
     
+    /// A cached list of timezone labels.
     static var labelList:[String]?
     
+    /**
+     Lazily builds the list of timezones labels.
+     
+     - parameter showSeparator: Should insert the separators?
+     
+     - returns: A [String] containing the timezone labels, plus separators ("-") if necessary.
+     */
     public func listOfTimezoneLabels(includeSeparators showSeparator:Bool) -> [String] {
         
         if EventDetailsDateSelectorViewModel.labelList == nil {

@@ -8,34 +8,55 @@
 
 import UIKit
 
-/**
- TimeZone Picker Errors
- 
- - InvalidTimeZoneName: A NSTimeZone is being initialized with an incorrect name parameter.  i.e.:  `NSTimeZone -initWithName:`
- - NotFound:    No NSTimeZone instance was found that matches the provided search paramerers
- */
-enum TimeZonePickerErrors : ErrorType {
-    case InvalidTimeZoneName(message:String)
-    case NotFound(message:String)
-}
+// MARK: Protocols
 
+/**
+ *  A protocol that "allows" an enum to enumerate its values.
+ */
 protocol Enumeratable {
     
     static var allValues:[Self] { get }
 }
 
+/**
+ *  A Timezone enumeration.  
+ *
+ *  Defines methods for accessing associated types: getTimeZoneName(), getTimeZoneLabel(), getTimeZone() 
+ */
 protocol TimeZoneEnum : Enumeratable {
     
     // Properties
+    
+    /**
+    Return the name (identifier) of a Timezone.
+    
+    - returns: The name (identifier).
+    - seealso: [NSTimeZone + timeZoneWithName:](https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSTimeZone_Class/index.html#//apple_ref/occ/clm/NSTimeZone/timeZoneWithName:)
+    */
     func getTimeZoneName() -> String
+    
+    /**
+     Returns the label associated to a NSTimeZone.
+     
+     - returns: the associated label
+     */
     func getTimeZoneLabel() -> String
     
-    // Transformation
+    /**
+     Returns the NSTimeZone instance associated to the enum value.
+     
+     - returns: A NSTimeZone instance.
+     */
     func getTimeZone() -> NSTimeZone?
 }
 
+// MARK: Constants
+
 struct TimeZoneConstants {
     
+    // MARK: TimeZones in the United States
+    
+    /// Timezones in the United States
     enum AmericaTimeZones: TimeZoneEnum {
         
         case Alaska, CentralTime, EasternTime, MountainTime, PacificTime
@@ -69,6 +90,7 @@ struct TimeZoneConstants {
         }
     }
     
+    /// Timezones in the United Kingdom
     enum UnitedKingdomTimeZones: TimeZoneEnum {
         case London
         static let allValues:[UnitedKingdomTimeZones] = [London]
@@ -91,6 +113,7 @@ struct TimeZoneConstants {
         }
     }
     
+    /// Timezones in the rest of the world
     enum OtherTimeZones : TimeZoneEnum {
         case AbuDhabi, Adelaide, Athens, AtlanticTime, Auckland, Bangkok, BuenosAires, CapeVerdeIsland, Caracas, Dhaka, Hawaii, HongKong, Islamabad, Kabul, Kathmandu, MidAtlantic, Moscow, NewCaledonia, NewDelhi, Newfoundland, Nukualofa, Paris, Rangoon, Samoa, Sydney, Tehran, Tokyo
         
