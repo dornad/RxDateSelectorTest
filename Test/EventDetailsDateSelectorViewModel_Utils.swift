@@ -221,15 +221,3 @@ func + <KeyType, ValueType> (left: Dictionary<KeyType, ValueType>, right: Dictio
     }
     return joined
 }
-
-/**
- TimeZone Picker Errors
- 
- - InvalidTimeZoneName: A NSTimeZone is being initialized with an incorrect name parameter.  i.e.:  `NSTimeZone -initWithName:`
- - NotFound:    No NSTimeZone instance was found that matches the provided search paramerers
- */
-enum TimeZonePickerErrors : ErrorType {
-    case InvalidTimeZoneName(message:String)
-    case NotFound(message:String)
-}
-

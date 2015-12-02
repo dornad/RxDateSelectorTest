@@ -15,8 +15,10 @@
 		5C2CA43B1BF234560081235C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C2CA43A1BF234560081235C /* Assets.xcassets */; };
 		5C2CA43E1BF234560081235C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C2CA43C1BF234560081235C /* LaunchScreen.storyboard */; };
 		5C5119351BF647A8001F708D /* SectionedTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */; };
+		5C7BC57A1C0F3BD900A61C9C /* TimeZoneConstantsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7BC5791C0F3BD900A61C9C /* TimeZoneConstantsTest.swift */; };
+		5C7BC57C1C0F3F5400A61C9C /* TimeZoneUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7BC57B1C0F3F5400A61C9C /* TimeZoneUtilsTest.swift */; };
 		5C9DFB991BFFB3860078CA3A /* ValueHolderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9DFB981BFFB3860078CA3A /* ValueHolderTests.swift */; };
-		5CA77A5C1BF5494D0035F065 /* EventDetailsDateSelector_Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA77A5B1BF5494D0035F065 /* EventDetailsDateSelector_Utils.swift */; };
+		5CA77A5C1BF5494D0035F065 /* EventDetailsDateSelectorViewModel_Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA77A5B1BF5494D0035F065 /* EventDetailsDateSelectorViewModel_Utils.swift */; };
 		5CA77A611BF54F020035F065 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		5CA77A621BF54F020035F065 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		5CA77A631BF54F020035F065 /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -51,8 +53,10 @@
 		5C2CA43D1BF234560081235C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5C2CA43F1BF234560081235C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C5119341BF647A8001F708D /* SectionedTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SectionedTableViewDataSource.swift; path = RxSwift_Additions/SectionedTableViewDataSource.swift; sourceTree = "<group>"; };
+		5C7BC5791C0F3BD900A61C9C /* TimeZoneConstantsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeZoneConstantsTest.swift; sourceTree = "<group>"; };
+		5C7BC57B1C0F3F5400A61C9C /* TimeZoneUtilsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeZoneUtilsTest.swift; sourceTree = "<group>"; };
 		5C9DFB981BFFB3860078CA3A /* ValueHolderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueHolderTests.swift; sourceTree = "<group>"; };
-		5CA77A5B1BF5494D0035F065 /* EventDetailsDateSelector_Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailsDateSelector_Utils.swift; sourceTree = "<group>"; };
+		5CA77A5B1BF5494D0035F065 /* EventDetailsDateSelectorViewModel_Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailsDateSelectorViewModel_Utils.swift; sourceTree = "<group>"; };
 		5CB8661C1BFA8790002962AE /* TestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CB8661E1BFA8790002962AE /* ViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelTests.swift; sourceTree = "<group>"; };
 		5CB866201BFA8790002962AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -124,7 +128,6 @@
 				5CA77A5A1BF548A10035F065 /* Views */,
 				5CA77A5D1BF54E6E0035F065 /* Additions */,
 				5CF281861BFCC91800982D0E /* Fonts */,
-				5CA77A5B1BF5494D0035F065 /* EventDetailsDateSelector_Utils.swift */,
 				5C2CA4331BF234560081235C /* AppDelegate.swift */,
 				5C2CA4371BF234560081235C /* Main.storyboard */,
 				5C2CA43A1BF234560081235C /* Assets.xcassets */,
@@ -163,6 +166,8 @@
 		5CB8661D1BFA8790002962AE /* TestTests */ = {
 			isa = PBXGroup;
 			children = (
+				5C7BC5791C0F3BD900A61C9C /* TimeZoneConstantsTest.swift */,
+				5C7BC57B1C0F3F5400A61C9C /* TimeZoneUtilsTest.swift */,
 				5CB8661E1BFA8790002962AE /* ViewModelTests.swift */,
 				5C9DFB981BFFB3860078CA3A /* ValueHolderTests.swift */,
 				5CB866201BFA8790002962AE /* Info.plist */,
@@ -173,6 +178,7 @@
 		5CC848D51C03824300BD9407 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				5CA77A5B1BF5494D0035F065 /* EventDetailsDateSelectorViewModel_Utils.swift */,
 				5CE283421BF4F2FD00A0DB22 /* EventDetailsDateSelectorViewModel.swift */,
 			);
 			name = ViewModels;
@@ -375,7 +381,7 @@
 				5C5119351BF647A8001F708D /* SectionedTableViewDataSource.swift in Sources */,
 				5C2CA4341BF234560081235C /* AppDelegate.swift in Sources */,
 				5CA77A611BF54F020035F065 /* (null) in Sources */,
-				5CA77A5C1BF5494D0035F065 /* EventDetailsDateSelector_Utils.swift in Sources */,
+				5CA77A5C1BF5494D0035F065 /* EventDetailsDateSelectorViewModel_Utils.swift in Sources */,
 				5C17F9F01C0E431A006E353D /* TimeZoneConstants.swift in Sources */,
 				5CA77A621BF54F020035F065 /* (null) in Sources */,
 			);
@@ -385,7 +391,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C7BC57A1C0F3BD900A61C9C /* TimeZoneConstantsTest.swift in Sources */,
 				5CB8661F1BFA8790002962AE /* ViewModelTests.swift in Sources */,
+				5C7BC57C1C0F3F5400A61C9C /* TimeZoneUtilsTest.swift in Sources */,
 				5C9DFB991BFFB3860078CA3A /* ValueHolderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
