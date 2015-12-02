@@ -141,7 +141,7 @@ extension EventDetailsDateSelectorViewController {
         
         // Using NSAttributedString to add a letter-spacing of 1.25 to the button label.
         let title = NSLocalizedString("SAVE", comment: "Title of Save button in Date/Time picker")
-        let attributes = [NSFontAttributeName: UIFont.helveticaNeueMediumFontWithSize(12), NSKernAttributeName: CGFloat(1.25)]
+        let attributes = [NSFontAttributeName: UIFont.helveticaNeueMediumFontWithSize(12), NSKernAttributeName: CGFloat(1.25), NSForegroundColorAttributeName: UIColor.whiteColor()]
         let attributedString = NSAttributedString(string: title, attributes: attributes)
         button.setAttributedTitle(attributedString, forState: .Normal)
         
