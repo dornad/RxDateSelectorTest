@@ -466,6 +466,36 @@ class ViewModelReactiveTests : XCTestCase {
         XCTAssertNotNil(allDayStringObs)
         XCTAssertNotNil(timezoneStringObs)
     }
+    
+    func testListOfTimezoneLabels() {
+        
+        let viewModel = EventDetailsDateSelectorViewModel()
+
+        let timezoneLabels:[String] = viewModel.listOfTimezoneLabels(includeSeparators:true)
+        
+        let numTimeZonesAmerica = TimeZoneConstants.AmericaTimeZones.allValues.count
+        let numTimeZonesUK      = TimeZoneConstants.UnitedKingdomTimeZones.allValues.count
+        let numTimeZonesOther   = TimeZoneConstants.OtherTimeZones.allValues.count
+        
+        XCTAssertTrue(timezoneLabels.count > 0)
+        
+        XCTAssertEqual(numTimeZonesAmerica + numTimeZonesOther + numTimeZonesUK + 2, timezoneLabels.count)
+        
+        let firstSeparatorIndex:Int  = numTimeZonesAmerica
+        let secondSeparatorIndex:Int = numTimeZonesAmerica + numTimeZonesUK + 1
+        
+        XCTAssertEqual(timezoneLabels[firstSeparatorIndex], "-")
+        XCTAssertEqual(timezoneLabels[secondSeparatorIndex], "-")
+    }
+    
+    func testPerformanceForCreatingListOfTimezoneLabels() {
+        
+        let viewModel = EventDetailsDateSelectorViewModel()
+        
+        measureBlock { () -> Void in
+            viewModel.listOfTimezoneLabels(includeSeparators:true)
+        }
+    }
 }
 
 class ViewModelRelatedTypesTests : XCTestCase {

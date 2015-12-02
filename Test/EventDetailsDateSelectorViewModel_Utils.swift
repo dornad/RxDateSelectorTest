@@ -202,22 +202,3 @@ public enum SectionSelection {
 
 /// A SectionDesc (short for SectionDesc Descriptor) is a tuple between SectionType and SectionState.
 public typealias SectionDesc = (type:SectionType, state:SectionState, selectionState:SectionSelection)
-
-// MARK: Time Zones
-
-/**
-Override the "+" operator to implement Dictionary joining
-
-- parameter left:  a dictionary
-- parameter right: another dictionary
-
-- returns: A dictionary representing the union between the two dictionaries.
-*/
-func + <KeyType, ValueType> (left: Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) -> Dictionary<KeyType, ValueType> {
-    
-    var joined = left
-    for (k,v) in right {
-        joined.updateValue(v, forKey: k)
-    }
-    return joined
-}
