@@ -124,7 +124,7 @@ extension EventDetailsDateSelectorViewController {
                 .right
                 .bottom
                 .equalTo(separator.superview!)
-            make.height.equalTo(0.5)
+            make.height.equalTo(1)
         }
     }
     

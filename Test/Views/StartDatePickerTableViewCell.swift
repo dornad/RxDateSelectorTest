@@ -65,11 +65,6 @@ public class StartDatePickerTableViewCell : UITableViewCell, PickerCellType {
         self.picker.removeFromSuperview()
         self.picker.datePickerMode = viewModel.allDay.value ? UIDatePickerMode.Date : UIDatePickerMode.DateAndTime
         
-        if sectionDesc.type == .StartDate {
-            self.picker.layer.cornerRadius = 10
-            self.picker.layer.masksToBounds = true
-        }
-        
         self.contentView.addSubview(self.picker)
 
         bindValueToDatePicker(viewModel, disposeBag: disposeBag)
